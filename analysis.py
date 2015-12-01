@@ -1,6 +1,6 @@
 from blockchain_info import *
 
-def build_tx_edges(blocks, first_tx):
+def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
     those blocks that received coins from the initial transaction.
     """
@@ -28,11 +28,11 @@ def build_tx_edges(blocks, first_tx):
 
     return known_addrs
 
-def find_path(edges, start_addr, end_addr):
-    """ Takes a list of edges created in build_tx_edges and two addresses.
+def _find_path(edges, start_addr, end_addr):
+    """ Takes a list of edges created in _build_tx_edges and two addresses.
     Returns None if no path, otherwise a list of addresses. 
     """
-    pass
+    return None
 
 def direct_link_exists(tx_in_hash, tx_out_hash):
     """
@@ -57,9 +57,9 @@ def direct_link_exists(tx_in_hash, tx_out_hash):
 
     # the first transaction going into the mixer, represented as a 2-tuple
     first_tx = (start_addr, first_mixer_addr)
-    edges = build_tx_edges(blocks, first_tx)
+    edges = _build_tx_edges(blocks, first_tx)
 
-    path = find_path(edges, start_addr, end_addr)
+    path = _find_path(edges, start_addr, end_addr)
     if path:
         return True
     else:
