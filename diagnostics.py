@@ -59,6 +59,10 @@ def direct_link_exists(tx_in_hash, tx_out_hash):
     first_tx = (start_addr, first_mixer_addr)
     edges = build_tx_edges(blocks, first_tx)
 
-    # Now we have 
+    path = find_path(edges, start_addr, end_addr)
+    if path:
+        return True
+    else:
+        return False
 
 
