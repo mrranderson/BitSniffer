@@ -26,7 +26,7 @@ def _build_tx_edges(blocks, first_tx):
 
         edges.extend(new_edges)
 
-    return known_addrs
+    return edges 
 
 def _find_path(edges, start_addr, end_addr):
     """ Takes a list of edges created in _build_tx_edges and two addresses.
@@ -34,14 +34,10 @@ def _find_path(edges, start_addr, end_addr):
     """
     return None
 
-def direct_link_exists(tx_in_hash, tx_out_hash):
+def direct_link_exists(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
+        mixer_input_addr):
     """
-    Returns a list of transactions that link the two addresses 
-
-    Note: 
-    if there's more than one output in either transaction, we don't have
-    enough information to know which addresses belong to the user.
-    (This can be changed later. It simplifies our code right now.)
+    Returns a list of transactions that link the two addresses.
     """
     # fetch the transactions going into and out of the mixing service
     # also fetch block objects between the two
@@ -49,17 +45,13 @@ def direct_link_exists(tx_in_hash, tx_out_hash):
     tx_out = get_tx(tx_out_hash)
     blocks = get_blocks_between_txs(tx_in, tx_out)
 
-    # the user's address, then the mixer's first address, then the user's
-    # receiving address
-    start_addr       =  tx_in['inputs'][0]['prev_out']['addr']
-    first_mixer_addr =  tx_in['out']   [0]['addr']
-    end_addr         = tx_out['out']   [0]['addr']
-
     # the first transaction going into the mixer, represented as a 2-tuple
-    first_tx = (start_addr, first_mixer_addr)
+    first_tx = (user_start_addr, mixer_input_addr)
     edges = _build_tx_edges(blocks, first_tx)
+    print(edges)
+    print(len(edges))
 
-    path = _find_path(edges, start_addr, end_addr)
+    path = _find_path(edges, user_start_addr, user_end_addr)
     if path:
         return True
     else:

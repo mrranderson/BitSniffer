@@ -70,17 +70,27 @@ def get_block_from_height(block_height):
 
 def get_blocks_between_txs(tx_in, tx_out):
     """ Returns a list of all blocks between the two txs, inclusive """
-    print(tx_in['hash'])
     start_height =  tx_in['block_height']
     end_height   = tx_out['block_height']
-    print(start_height, end_height)
-    blocks = [get_block_from_height(h) for h in range(start_height, end_height+1)]
+    return [get_block_from_height(h) for h in range(start_height, end_height+1)]
 
 def get_input_addrs(tx):
     """ Takes tx object and returns the input addresses associated. """
-    return [x['prev_out']['addr'] for x in tx['inputs']]
+    try:
+        return [x['prev_out']['addr'] for x in tx['inputs']]
+    except KeyError:
+        # This happens when there's a coinbase transaction
+        return []
 
 def get_output_addrs(tx):
     """ Takes tx object and returns the output addresses associated. """
-    return [x['addr'] for x in tx['out']]
+    addrs = []
+    for x in tx['out']:
+        # Sometimes there's no output address for a tx?? see:
+        # https://blockchain.info/tx/02f96fe50b6d65c2f784b1e5260915877415330404bc17c66f74e2b5bd06ea14
+        try:
+            addrs.append(x['addr'])
+        except KeyError:
+            continue
+    return addrs
 
