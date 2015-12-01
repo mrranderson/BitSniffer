@@ -24,7 +24,7 @@ def _build_tx_edges(blocks, first_tx):
                             [(input_addr, x) for x in output_addrs] )
                         break
 
-       edges.extend(new_edges)
+        edges.extend(new_edges)
 
     return known_addrs
 
@@ -51,7 +51,7 @@ def direct_link_exists(tx_in_hash, tx_out_hash):
 
     # the user's address, then the mixer's first address, then the user's
     # receiving address
-    start_addr       =  tx_in['inputs'][0]['addr']
+    start_addr       =  tx_in['inputs'][0]['prev_out']['addr']
     first_mixer_addr =  tx_in['out']   [0]['addr']
     end_addr         = tx_out['out']   [0]['addr']
 

@@ -61,8 +61,8 @@ def get_block(block_hash):
 
 def get_block_from_height(block_height):
     """ Returns block object from height. Assume there's only one. """
-    blocks = _retrieve(block_height, "BLOCKHEIGHT")
-    if len(blocks['blocks'] > 1):
+    blocks = _retrieve(str(block_height), "BLOCKHEIGHT")
+    if len(blocks['blocks']) > 1:
         raise RuntimeError(
             """There is more than one block at height {}. Try waiting a little
             bit for the blockchain to come together.""")
@@ -70,8 +70,10 @@ def get_block_from_height(block_height):
 
 def get_blocks_between_txs(tx_in, tx_out):
     """ Returns a list of all blocks between the two txs, inclusive """
-    start_height =  tx_in['out'][0]['block_height']
-    end_height   = tx_out['out'][0]['block_height']
+    print(tx_in['hash'])
+    start_height =  tx_in['block_height']
+    end_height   = tx_out['block_height']
+    print(start_height, end_height)
     blocks = [get_block_from_height(h) for h in range(start_height, end_height+1)]
 
 def get_input_addrs(tx):
