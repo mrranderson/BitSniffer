@@ -7,7 +7,7 @@ if 'backend' not in ls('.'):
 
 from lib.bottle import route, run, template, get, post, request, view, \
         static_file
-from backend.analysis import *
+import backend.analysis
 
 @route('/static/:path#.+#', name='static')
 def static(path):

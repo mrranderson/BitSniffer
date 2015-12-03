@@ -1,4 +1,4 @@
-import blockchain_info
+from backend import blockchain_info
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
@@ -25,9 +25,6 @@ def _build_tx_edges(blocks, first_tx):
                         break
 
         edges.extend(new_edges)
-
-    print(edges)
-    exit()
 
     return edges 
 
@@ -96,12 +93,52 @@ def _build_tx_edges_dict(blocks, first_tx):
 
     return sub_graph
 
-def _find_path(edges, start_addr, end_addr):
-    """ Takes a list of edges created in _build_tx_edges and two addresses.
-    Returns None if no path, otherwise a list of addresses. 
+def _find_path(graph, start_addr, end_addr):
+    """Determines if there is a path from start_addr to end_addr (note that
+    edges in the graph are unidirectional).
+
+    Args:
+        graph, dict, a dict that maps a string (the sending address) to a set
+            that contains every address that has received BTC from the sending
+            address
+        start_addr, string, the starting (sending) address for the path
+        end_addr, string, the ending (receiving) address for the path
+
+    Returns:
+        None, if no path, otherwise a list of addresses representing the path
     """
 
-    print(edges)
+    if type(graph) is not dict:
+        raise TypeError("graph should be a dictionary")
+
+    if start_addr not in graph:
+        return None
+
+    # now, we perform a DFS...
+
+    parent_mapping = {} # maps a child addr to its parent
+    stack = []
+    stack.insert(0, start_addr) # the equivalent of push()
+
+    while len(stack) > 0:
+        addr = stack.pop()
+
+        if addr == end_addr:
+            path = []
+            path.append(addr)
+            parent = parent_mapping[addr]
+
+            while parent != start_addr:
+                path.append(parent)
+                parent = parent_mapping[parent]
+
+            path.append(parent)
+
+            return path
+
+        for child_addr in graph[addr]:
+            stack.insert(0, child_addr)
+            parent_mapping[child_addr] = addr
 
     return None
 
@@ -109,7 +146,8 @@ def direct_link_exists(tx_in_hash,
                        tx_out_hash, 
                        user_start_addr, 
                        user_end_addr,
-                       mixer_input_addr):
+                       mixer_input_addr,
+                       verbose=False):
     """Returns a list of transactions that link the two addresses.
 
     Args:
@@ -120,21 +158,41 @@ def direct_link_exists(tx_in_hash,
         user_start_addr, string, the address used to send BTC to the mixer
         user_end_addr, string, the address used to receive BTC from the mixer
         mixer_input_addr, string, the address the mixer uses to receive BTC
+        verbose, boolean, flag to enable/disable status printing
     """
+
+    if verbose:
+        print("Collecting transactions and blocks...")
+
     # fetch the transactions going into and out of the mixing service
     # also fetch block objects between the two
     tx_in = blockchain_info.get_tx(tx_in_hash)
     tx_out = blockchain_info.get_tx(tx_out_hash)
     blocks = blockchain_info.get_blocks_between_txs(tx_in, tx_out)
 
+    if verbose:
+        print("Building transaction graph...\n")
+
     # the first transaction going into the mixer, represented as a 2-tuple
     first_tx = (user_start_addr, mixer_input_addr)
-    edges = _build_tx_edges(blocks, first_tx)
-    print(edges)
-    print(len(edges))
+    graph = _build_tx_edges_dict(blocks, first_tx)
+    
+    if verbose:
+        print("Graph: (num sending addresses = %d)\n" % (len(graph)))
 
-    path = _find_path(edges, user_start_addr, user_end_addr)
+        for adr in graph:
+            print("%s \n--> %s" % (adr, graph[adr]))
+
+        print("\nAttempting to find a path...\n")
+
+    path = _find_path(graph, user_start_addr, user_end_addr)
+
     if path:
+        if verbose:
+            print("Found a path!\n")
+            print(path)
+            print("\n")
+
         return True
     else:
         return False
@@ -167,4 +225,11 @@ def find_tx_by_output_amt(block, interval):
     
     return possible_txs
 
-
+if __name__ == "__main__":
+    direct_link_exists(       
+        '490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5',
+        'cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17',
+        '1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm',
+        '1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM',
+        '1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L',
+        verbose=True)
