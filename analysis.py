@@ -1,4 +1,4 @@
-from blockchain_info import *
+import blockchain_info
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
@@ -13,8 +13,8 @@ def _build_tx_edges(blocks, first_tx):
     for block in blocks:
         new_edges = []
         for tx in block['tx']:
-            input_addrs = get_input_addrs(tx)
-            output_addrs = get_output_addrs(tx)
+            input_addrs = blockchain_info.get_input_addrs(tx)
+            output_addrs = blockchain_info.get_output_addrs(tx)
             known_output_addrs = [x[1] for x in edges]
 
             for input_addr in input_addrs:
@@ -26,24 +26,106 @@ def _build_tx_edges(blocks, first_tx):
 
         edges.extend(new_edges)
 
+    print(edges)
+    exit()
+
     return edges 
+
+def _build_tx_edges_dict(blocks, first_tx):
+    """ Given a transaction and a list of blocks, find all other transactions in
+    those blocks that received coins from the initial transaction.
+
+    Args:
+        blocks, list, a list of block dictionaries, as defined by the 
+            Blockchain.info API: https://blockchain.info/api/blockchain_api
+        first_tx, tuple, a tuple of length 2: the first element is a string
+            representing the sending address in the first transaction; the 
+            second element is a string representing the receiving address in 
+            the transaction
+
+    Returns:
+        sub_graph, dictionary, a dict that maps a string (the sending address)
+            to a set that contains every address that has received BTC from the
+            sending address
+    """
+
+    # first we need to look through all of the blocks and build a graph for all
+    # of them
+
+    graph = {}
+    graph[first_tx[0]] = set()
+    graph[first_tx[0]].add(first_tx[1])
+    graph[first_tx[1]] = set()
+
+    for block in blocks:
+        for tx in block['tx']:
+            input_addrs = blockchain_info.get_input_addrs(tx)
+            output_addrs = blockchain_info.get_output_addrs(tx)
+
+            for input_addr in input_addrs:
+                if input_addr not in graph:
+                    graph[input_addr] = set()
+                
+                for output_addr in output_addrs:
+                    if output_addr != input_addr:
+                        graph[input_addr].add(output_addr)
+
+    # now we perform a BFS and generate the subgraph of transactions that are
+    # connected (somehow) to the input transaction
+
+    sub_graph = {}
+    sub_graph[first_tx[0]] = set()
+    sub_graph[first_tx[0]].add(first_tx[1])
+    sub_graph[first_tx[1]] = set()
+
+    queue = []
+    queue.append(first_tx[1])
+
+    while len(queue) > 0:
+        adr = queue.pop()
+
+        if adr not in sub_graph:
+            sub_graph[adr] = set()
+
+        if adr in graph:
+            for adr2 in graph[adr]:
+                sub_graph[adr].add(adr2)
+
+                if adr2 not in queue:
+                    queue.append(adr2)
+
+    return sub_graph
 
 def _find_path(edges, start_addr, end_addr):
     """ Takes a list of edges created in _build_tx_edges and two addresses.
     Returns None if no path, otherwise a list of addresses. 
     """
+
+    print(edges)
+
     return None
 
-def direct_link_exists(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
-        mixer_input_addr):
-    """
-    Returns a list of transactions that link the two addresses.
+def direct_link_exists(tx_in_hash, 
+                       tx_out_hash, 
+                       user_start_addr, 
+                       user_end_addr,
+                       mixer_input_addr):
+    """Returns a list of transactions that link the two addresses.
+
+    Args:
+        tx_in_hash, string, transaction id hash of the input transaction to the
+            mixer (this is significant to the Blockchain.info API)
+        tx_out_hash, string, transaction id has of the output transction to the
+            mixer
+        user_start_addr, string, the address used to send BTC to the mixer
+        user_end_addr, string, the address used to receive BTC from the mixer
+        mixer_input_addr, string, the address the mixer uses to receive BTC
     """
     # fetch the transactions going into and out of the mixing service
     # also fetch block objects between the two
-    tx_in = get_tx(tx_in_hash)
-    tx_out = get_tx(tx_out_hash)
-    blocks = get_blocks_between_txs(tx_in, tx_out)
+    tx_in = blockchain_info.get_tx(tx_in_hash)
+    tx_out = blockchain_info.get_tx(tx_out_hash)
+    blocks = blockchain_info.get_blocks_between_txs(tx_in, tx_out)
 
     # the first transaction going into the mixer, represented as a 2-tuple
     first_tx = (user_start_addr, mixer_input_addr)
