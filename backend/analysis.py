@@ -123,6 +123,10 @@ def _find_path(graph, start_addr, end_addr):
     while len(stack) > 0:
         addr = stack.pop()
 
+        # if the current address being considered is the end address, we need
+        # traverse back through the graph to start_addr and keep track of the 
+        # path along the way
+
         if addr == end_addr:
             path = []
             path.append(addr)
