@@ -57,4 +57,11 @@ def direct_link_exists(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
     else:
         return False
 
-
+def get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
+        mixer_input_addr, start_time, end_time, flat_fee, percent_fee_lower,
+        percent_fee_upper): 
+    """
+    Returns a set of tx hashes that fall within the range. start_time and
+    end_time in hours, flat_fee in satoshis.
+    """
+    pass
