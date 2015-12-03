@@ -64,4 +64,25 @@ def get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
     Returns a set of tx hashes that fall within the range. start_time and
     end_time in hours, flat_fee in satoshis.
     """
+    # construct satoshi interval, then 
+    # call find_tx_by_output_amt inside a loop over blocks
+    # in the time interval
     pass
+
+
+    #CHANGEME
+def find_tx_by_output_amt(block, interval):
+    """ Interval is a tuple of (int, int) (satoshis) 
+    that gives the range, inclusive, we should return tx's for. """ 
+
+    possible_range = range(interval[0], interval[1]+1)
+    possible_txs = []
+    for tx in block['tx']:
+        for output in tx['out']:
+            if output['value'] in possible_range:
+                possible_txs.append(tx)
+                break
+    
+    return possible_txs
+
+
