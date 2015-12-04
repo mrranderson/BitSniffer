@@ -31,7 +31,7 @@
           </button>
           <a class="navbar-brand" href="/">Home</a>
           <a class="navbar-brand" href="/direct_link">Link Analysis</a>
-          <a class="navbar-brand" href="#">Anonymity Set</a>
+          <a class="navbar-brand" href="/anonymity_set">Anonymity Set</a>
         </div>
       </div>
     </nav>
