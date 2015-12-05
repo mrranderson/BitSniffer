@@ -32,20 +32,19 @@
           </button>
           <a class="navbar-brand" href="/">Home</a>
           <a class="navbar-brand" href="/direct_link">Link Analysis</a>
-          <a class="navbar-brand" href="/anonymity_set">Anonymity Set</a>
+          <a class="navbar-brand" href="anonymity_set">Anonymity Set</a>
         </div>
       </div>
     </nav>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
-      </div>
+    <div class="container padded">
+      <h3>There were {{len}} results.</h3>
+      <ul>
+        % for tx in results:
+          <li><a href="https://blockchain.info/tx/{{tx}}">{{tx}}</a></li>
+        %end
+      </ul>
     </div>
-
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="static/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>

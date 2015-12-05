@@ -201,11 +201,6 @@ def direct_link_exists(tx_in_hash,
     else:
         return False
 
-def get_output_value_to_addr(tx, addr):
-    for out in tx['out']:
-        if str(out['addr']) == addr:
-            return int(out['value'])
-
 def get_anonymity_set(tx_in_hash, 
                       tx_value, 
                       start_time, 
@@ -218,14 +213,9 @@ def get_anonymity_set(tx_in_hash,
     Returns a set of tx hashes that fall within the range. start_time and
     end_time in hours, flat_fee in satoshis.
     """
-    # construct satoshi interval, then 
-    # call find_tx_by_output_amt inside a loop over blocks
-    # in the time interval
-
     anonymity_set = []
 
     tx_in = bi.get_tx(tx_in_hash)
-    #tx_value = get_output_value_to_addr(tx_in, mixer_input_addr)
     ff = float(flat_fee)
     pfl = float(percent_fee_lower)
     pfu = float(percent_fee_upper)
@@ -233,14 +223,16 @@ def get_anonymity_set(tx_in_hash,
     start_time = float(start_time)
     end_time = float(end_time)
 
-    print(tx_value)
-
     interval = (int(tx_value-ff-(tx_value*pfu)),
                 int(tx_value-ff-(tx_value*pfl)))
     blocks = bi.get_blocks_in_time_range(tx_in, start_time, end_time)  
 
     for block in blocks:
         anonymity_set += bi.find_tx_by_output_amt(block, interval)
+
+    if verbose:
+        for x in anonymity_set:
+            print(x['hash'])
 
     return anonymity_set
 
