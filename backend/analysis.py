@@ -1,4 +1,11 @@
-from backend import blockchain_info as bi
+import os
+
+if 'backend' in os.listdir('.'):
+    from backend import blockchain_info as bi
+    from backend import linkability_tests
+else:
+    import blockchain_info as bi
+    import linkability_tests
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
@@ -214,9 +221,31 @@ def get_anonymity_set(tx_in_hash,
                       percent_fee_lower,
                       percent_fee_upper, 
                       verbose=False): 
-    """
+    """This calculates the anonymity set for a transaction through a mixer.
+
+    The anonymity set is a set of transactions which could be mistaken for the
+    actual output transaction from the mixer.
+
     Returns a set of tx hashes that fall within the range. start_time and
     end_time in hours, flat_fee in satoshis.
+
+    Args:
+        tx_in_hash, string, hash of input transaction to the mixer
+        tx_value, int, amount of BTC sent to the mixer, in Satoshi
+        start_time, int, number of hours after the transaction to the mixer was 
+            submitted (this is the lower time-bound for the blocks we need to
+            search over)
+        end_time, int, number of hours after the transaction to the mixer was 
+            submitted (this is the upper time-bound for the blocks we need to
+            search over)
+        flat_fee, int, flat fee for the mixer, in Satoshi
+        percent_fee_lower, float, lower bound for percentage fee to the mixer
+        percent_fee_upper, float, upper bound for percentage fee to the mixer
+
+    Returns:
+        anonymity_set, list, a list of transactions (as defined by the 
+            transaction JSON object from the blockchain.info API) that 
+            represents the anonymity set
     """
     # construct satoshi interval, then 
     # call find_tx_by_output_amt inside a loop over blocks
@@ -244,17 +273,34 @@ def get_anonymity_set(tx_in_hash,
 
     return anonymity_set
 
+def test_linkability(adr1, adr2):
+    """
+    """
+
+    tests = [
+        linkability_tests.TotalAmountSentTest(),
+        linkability_tests.IndividualAmountSentTest(),
+        linkability_tests.DirectLinkExistsTest()
+    ]
+
+    blocks_to_search_over = None
+
+    for test in tests:
+        test.test(adr1, adr2, blocks_to_search_over)
+
 if __name__ == "__main__":
-    #direct_link_exists(       
-    print(len(get_anonymity_set(
-        '490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5',
-        'cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17',
-        '1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm',
-        '1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM',
-        '1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L',
-        0,
-        5,
-        0,
-        .05,
-        .06,
-        verbose=True)))
+    test_linkability(None, None)
+
+    # direct_link_exists(       
+    # print(len(get_anonymity_set(
+    #     '490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5',
+    #     'cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17',
+    #     '1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm',
+    #     '1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM',
+    #     '1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L',
+    #     0,
+    #     5,
+    #     0,
+    #     .05,
+    #     .06,
+    #     verbose=True)))
