@@ -110,18 +110,22 @@ def get_blocks_in_time_range(tx_in, start_time, end_time):
 
 def find_tx_by_output_amt(block, interval):
     """ Interval is a tuple of (int, int) (satoshis) 
-    that gives the range, inclusive, we should return tx's for. """ 
+    that gives the range, inclusive, we should return tx's for. 
+    
+    Returns an obj of {tx_hash, addr} so we can identify which address in each
+    transaction matched later on.
+    """ 
 
     possible_range = range(interval[0], interval[1]+1)
-    possible_txs = []
+    possible_outputs = []
     for tx in block['tx']:
         fee = get_fee(tx)
         for output in tx['out']:
             if output['value'] - fee in possible_range:
-                possible_txs.append(tx)
+                possible_outputs.append({"tx_hash": tx['hash'], "addr": output['addr']})
                 break
     
-    return possible_txs
+    return possible_outputs
 
 def get_fee(tx):
     """ Takes tx object and returns the transaction fee in satoshis """

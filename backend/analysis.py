@@ -146,12 +146,12 @@ def _find_path(graph, start_addr, end_addr):
 
     return None
 
-def direct_link_exists(tx_in_hash, 
-                       tx_out_hash, 
-                       user_start_addr, 
-                       user_end_addr,
-                       mixer_input_addr,
-                       verbose=False):
+def get_path(tx_in_hash, 
+             tx_out_hash, 
+             user_start_addr, 
+             user_end_addr,
+             mixer_input_addr,
+             verbose=False):
     """Returns a list of transactions that link the two addresses.
 
     Args:
@@ -191,15 +191,13 @@ def direct_link_exists(tx_in_hash,
 
     path = _find_path(graph, user_start_addr, user_end_addr)
 
-    if path:
-        if verbose:
-            print("Found a path!\n")
-            print(path)
-            print("\n")
+    if verbose and path:
+        print("Found a path!\n")
+        print(path)
+        print("\n")
 
-        return True
-    else:
-        return False
+    return path
+
 
 def get_anonymity_set(tx_in_hash, 
                       tx_value, 
@@ -232,7 +230,7 @@ def get_anonymity_set(tx_in_hash,
 
     if verbose:
         for x in anonymity_set:
-            print(x['hash'])
+            print(x)
 
     return anonymity_set
 

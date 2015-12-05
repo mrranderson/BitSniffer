@@ -40,8 +40,13 @@
     <div class="container padded">
       <h3>There were {{len}} results.</h3>
       <ul>
-        % for tx in results:
-          <li><a href="https://blockchain.info/tx/{{tx}}">{{tx}}</a></li>
+        % for tx in set:
+          <li>
+            <p> 
+              Address <b>{{tx['addr']}}</b> in transaction 
+              <b><a target="_blank" href="https://blockchain.info/tx/{{tx['tx_hash']}}">{{tx['tx_hash']}}</a></b>
+            </p>
+          </li>
         %end
       </ul>
     </div>

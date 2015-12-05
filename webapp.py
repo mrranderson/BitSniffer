@@ -7,7 +7,7 @@ if 'backend' not in ls('.'):
 
 from lib.bottle import route, run, template, get, post, request, view, \
         static_file
-from backend.analysis import direct_link_exists, get_anonymity_set
+from backend.analysis import get_path, get_anonymity_set
 
 @route('/static/:path#.+#', name='static')
 def static(path):
@@ -24,20 +24,21 @@ def direct_link_prompt():
     return {}
 
 @post('/direct_link')
+@view('direct_link_results')
 def direct_link_handle():
-    tx_in_hash = request.forms.get('tx_in_hash')
-    tx_out_hash = request.forms.get('tx_out_hash')
-    user_start_addr = request.forms.get('user_start_addr')
-    user_end_addr = request.forms.get('user_end_addr')
-    mixer_input_addr = request.forms.get('mixer_input_addr')
+    args = [request.forms.get('tx_in_hash'), 
+            request.forms.get('tx_out_hash'), 
+            request.forms.get('user_start_addr'),
+            request.forms.get('user_end_addr'),
+            request.forms.get('mixer_input_addr'),]
 
-    res = direct_link_exists (tx_in_hash, tx_out_hash, user_start_addr,
-        user_end_addr, mixer_input_addr)
+    path = get_path(*args)
 
-    print(res)
-    if res:
-        return "These are linked!"
-    return "These are not linked."
+    return {
+            "msg"       : "These are linked!" if path else "These are not linked.",
+            "path"      : path[:-1],
+            "last_addr" : path[-1]
+        }
 
 @get('/anonymity_set')
 @view('anonymity_set')
@@ -47,21 +48,19 @@ def anonymity_set_prompt():
 @post('/anonymity_set_results')
 @view('anonymity_set_results')
 def anonymity_set_handle():
-    tx_in_hash = request.forms.get('tx_in_hash')
-    tx_value = request.forms.get('tx_value')
-    start_time = request.forms.get('start_time')
-    end_time = request.forms.get('end_time')
-    flat_fee = request.forms.get('flat_fee')
-    percent_fee_lower = request.forms.get('percent_fee_lower')
-    percent_fee_upper = request.forms.get('percent_fee_upper')
- 
-    anonymity_set = get_anonymity_set(tx_in_hash, tx_value, start_time,
-            end_time, flat_fee, percent_fee_lower, percent_fee_upper,
-            verbose=True)
+    args = [request.forms.get('tx_in_hash'),
+            request.forms.get('tx_value'),
+            request.forms.get('start_time'),
+            request.forms.get('end_time'),
+            request.forms.get('flat_fee'),
+            request.forms.get('percent_fee_lower'),
+            request.forms.get('percent_fee_upper')]
+
+    anonymity_set = get_anonymity_set(*args, verbose=True)
     
     return { 
             "len": len(anonymity_set), 
-            "results": [x['hash'] for x in anonymity_set]
+            "set": anonymity_set
         }
 
 if __name__ == '__main__':

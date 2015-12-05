@@ -37,44 +37,58 @@
       </div>
     </nav>
 
-    <div class="container">
-      <form action="/anonymity_set_results" method="post">
+    <div class="container padded">
+      <form action="/anonymity_set_results" method="post" class="form-horizontal">
           <div class="form-group">
-            <label>tx_in_hash:<label> 
-            <input name="tx_in_hash" class="form-control" type="text"
-            value="0197dabc3c31c8221b5d7883a9d03240bcf7a3042e1bf6dcc26c8d3aa60c58ab" />
+            <label class="col-sm-2">tx_in_hash:</label> 
+            <div class="col-sm-10">
+              <input name="tx_in_hash" class="form-control" type="text"
+              value="0197dabc3c31c8221b5d7883a9d03240bcf7a3042e1bf6dcc26c8d3aa60c58ab" />
+            </div>
           </div>
           <div class="form-group">
-            <label>tx_value (in satoshis):<label> 
-            <input name="tx_value" class="form-control" type="text" 
-            value="1523000"/>
+            <label class="col-sm-2">tx_value (in satoshis):</label> 
+            <div class="col-sm-10">
+              <input name="tx_value" class="form-control" type="text" 
+              value="1523000"/>
+            </div>
           </div>
           <div class="form-group">
-            <label>start_time (in hours):<label> 
-            <input name="start_time" class="form-control" type="text" 
-            value="0.0"/>
+            <label class="col-sm-2">start_time (in hours):</label> 
+            <div class="col-sm-10">
+              <input name="start_time" class="form-control" type="text" 
+              value="0.0"/>
+            </div>
           </div>
           <div class="form-group">
-            <label>end_time (in hours):<label> 
-            <input name="end_time" class="form-control" type="text" 
-            value="0.75"/>
+            <label class="col-sm-2">end_time (in hours):</label> 
+            <div class="col-sm-10">
+              <input name="end_time" class="form-control" type="text" 
+              value="0.75"/>
+            </div>
           </div>
           <div class="form-group">
-            <label>Flat Fee (in Satoshis):<label> 
-            <input name="flat_fee" class="form-control" type="text" 
-            value="50000"/>
+            <label class="col-sm-2">Flat Fee (in Satoshis):</label> 
+            <div class="col-sm-10">
+              <input name="flat_fee" class="form-control" type="text" 
+              value="50000"/>
+            </div>
           </div>
           <div class="form-group">
-            <label>percent_fee_lower (from 0.0 to 1.0):<label> 
-            <input name="percent_fee_lower" class="form-control" type="text" 
-            value=".005"/>
+            <label class="col-sm-2">percent_fee_lower (from 0.0 to 1.0):</label> 
+            <div class="col-sm-10">
+              <input name="percent_fee_lower" class="form-control" type="text" 
+              value=".005"/>
+            </div>
           </div>
           <div class="form-group">
-            <label>percent_fee_upper (from 0.0 to 1.0):<label> 
-            <input name="percent_fee_upper" class="form-control" type="text"
-            value=".006"/>
+            <label class="col-sm-2">percent_fee_upper (from 0.0 to 1.0):</label> 
+            <div class="col-sm-10">
+              <input name="percent_fee_upper" class="form-control" type="text"
+              value=".006"/>
+            </div>
           </div>
-          <input value="Analyze" type="submit" />
+          <input value="Analyze" class="col-sm-offset-2 col-sm-10 btn btn-default" type="submit" />
       </form>
     </div>
 

@@ -38,44 +38,18 @@
     </nav>
 
     <div class="container padded">
-      <form action="/direct_link" method="post" class="form-horizontal">
-          <div class="form-group">
-            <label class="col-sm-2">tx_in_hash:</label> 
-            <div class="col-sm-10">
-              <input name="tx_in_hash" class="form-control" type="text" 
-              value="490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2">tx_out_hash:</label> 
-            <div class="col-sm-10">
-              <input name="tx_out_hash" class="form-control" type="text" 
-              value="cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2">user_start_addr:</label> 
-            <div class="col-sm-10">
-              <input name="user_start_addr" class="form-control" type="text" 
-              value="1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2">user_end_addr:</label> 
-            <div class="col-sm-10">
-              <input name="user_end_addr" class="form-control" type="text" 
-              value="1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2">mixer_input_addr:</label> 
-            <div class="col-sm-10">
-              <input name="mixer_input_addr" class="form-control" type="text" 
-              value="1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L"/>
-            </div>
-          </div>
-          <input value="Analyze" class="col-sm-offset-2 col-sm-10 btn btn-default" type="submit" />
-      </form>
+      <h3>{{msg}}</h3>
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6" style="text-align:center;display:block;">
+          %for addr in path:
+            <h4><a target="_blank" href="https://blockchain.info/address/{{addr}}">{{addr}}</a></h4>
+            <span class="glyphicon glyphicon-arrow-down"></span>
+          %end
+          <h4><a target="_blank" href="https://blockchain.info/address/{{last_addr}}">{{last_addr}}</a></h4>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
