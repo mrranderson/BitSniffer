@@ -116,12 +116,11 @@ def find_tx_by_output_amt(block, interval):
     transaction matched later on.
     """ 
 
-    possible_range = range(interval[0], interval[1]+1)
     possible_outputs = []
     for tx in block['tx']:
         fee = get_fee(tx)
         for output in tx['out']:
-            if output['value'] - fee in possible_range:
+            if output['value'] in range(interval[0]-fee, interval[1]-fee+1):
                 possible_outputs.append({"tx_hash": tx['hash'], "addr": output['addr']})
                 break
     

@@ -44,7 +44,9 @@
           <li>
             <p> 
               Address <b>{{tx['addr']}}</b> in transaction 
-              <b><a target="_blank" href="https://blockchain.info/tx/{{tx['tx_hash']}}">{{tx['tx_hash']}}</a></b>
+              <b><a target="_blank"
+              href="https://blockchain.info/tx/{{tx['tx_hash']}}">{{tx['tx_hash']}}</a></b>,
+              {{tx['offset']}} blocks after the first.
             </p>
           </li>
         %end

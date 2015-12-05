@@ -285,12 +285,17 @@ def get_anonymity_set(tx_in_hash,
     start_time = float(start_time)
     end_time = float(end_time)
 
-    interval = (int(tx_value-ff-(tx_value*pfu)),
-                int(tx_value-ff-(tx_value*pfl)))
+    interval = (int(tx_value - (ff + tx_value * pfu)),
+                int(tx_value - (ff + tx_value * pfl)))
     blocks = bi.get_blocks_in_time_range(tx_in, start_time, end_time)  
 
-    for block in blocks:
-        anonymity_set += bi.find_tx_by_output_amt(block, interval)
+    print(list(map(lambda x: x['height'], blocks)))
+
+    for i, block in enumerate(blocks):
+        new_txs = bi.find_tx_by_output_amt(block, interval)
+        for x in new_txs:
+            x['offset'] = i+1
+        anonymity_set += new_txs
 
     if verbose:
         for x in anonymity_set:
