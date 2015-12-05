@@ -1,4 +1,5 @@
-from backend import blockchain_info
+#from backend import blockchain_info
+import blockchain_info
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
@@ -201,9 +202,14 @@ def direct_link_exists(tx_in_hash,
     else:
         return False
 
+def get_output_value_to_addr(tx, addr):
+    for out in tx['out']:
+        if str(out['addr']) == addr:
+            return int(out['value'])
+
 def get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
         mixer_input_addr, start_time, end_time, flat_fee, percent_fee_lower,
-        percent_fee_upper): 
+        percent_fee_upper, verbose=False): 
     """
     Returns a set of tx hashes that fall within the range. start_time and
     end_time in hours, flat_fee in satoshis.
@@ -211,10 +217,24 @@ def get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
     # construct satoshi interval, then 
     # call find_tx_by_output_amt inside a loop over blocks
     # in the time interval
-    pass
 
+    anonymity_set = []
 
-    #CHANGEME
+    tx_in = blockchain_info.get_tx(tx_in_hash)
+    tx_out = blockchain_info.get_tx(tx_out_hash)
+    tx_value = get_output_value_to_addr(tx_in, mixer_input_addr)
+    ff = int(flat_fee)
+    pfl = float(percent_fee_lower)
+    pfu = float(percent_fee_upper)
+
+    interval = (tx_value-ff-int(tx_value*pfu), tx_value-ff-int(tx_value*pfl))
+    blocks = blockchain_info.get_blocks_in_time_range(tx_in, int(start_time), int(end_time))  
+
+    for block in blocks:
+        anonymity_set += find_tx_by_output_amt(block, interval)
+
+    return anonymity_set
+
 def find_tx_by_output_amt(block, interval):
     """ Interval is a tuple of (int, int) (satoshis) 
     that gives the range, inclusive, we should return tx's for. """ 
@@ -230,10 +250,16 @@ def find_tx_by_output_amt(block, interval):
     return possible_txs
 
 if __name__ == "__main__":
-    direct_link_exists(       
+    #direct_link_exists(       
+    print(len(get_anonymity_set(
         '490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5',
         'cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17',
         '1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm',
         '1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM',
         '1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L',
-        verbose=True)
+        0,
+        5,
+        0,
+        .05,
+        .06,
+        verbose=True)))

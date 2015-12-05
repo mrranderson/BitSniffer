@@ -37,7 +37,7 @@
     </nav>
 
     <div class="container">
-      <form action="/direct_link" method="post">
+      <form action="/anonymity_set" method="post">
           <div class="form-group">
             <label>tx_in_hash:<label> 
             <input name="tx_in_hash" class="form-control" type="text" />
@@ -57,6 +57,26 @@
           <div class="form-group">
             <label>mixer_input_addr:<label> 
             <input name="mixer_input_addr" class="form-control" type="text" />
+          </div>
+          <div class="form-group">
+            <label>start_time:<label> 
+            <input name="start_time" class="form-control" type="text" />
+          </div>
+          <div class="form-group">
+            <label>end_time:<label> 
+            <input name="end_time" class="form-control" type="text" />
+          </div>
+          <div class="form-group">
+            <label>Flat Fee:<label> 
+            <input name="flat_fee" class="form-control" type="text" />
+          </div>
+          <div class="form-group">
+            <label>percent_fee_lower:<label> 
+            <input name="percent_fee_lower" class="form-control" type="text" />
+          </div>
+          <div class="form-group">
+            <label>percent_fee_upper:<label> 
+            <input name="percent_fee_upper" class="form-control" type="text" />
           </div>
           <input value="Analyze" type="submit" />
       </form>

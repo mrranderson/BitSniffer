@@ -74,6 +74,26 @@ def get_blocks_between_txs(tx_in, tx_out):
     end_height   = tx_out['block_height']
     return [get_block_from_height(h) for h in range(start_height, end_height+1)]
 
+def get_blocks_in_time_range(tx_in, start_time, end_time):
+    """Return a list of all blocks starting start_time after tx_in, ending end_time after tx_in, where start_time and end_time are in hours after the initial transaction"""
+    start_block = get_block_from_height(tx_in['block_height'])
+
+    start_height = tx_in['block_height']
+    height = int(start_block['height'])
+    blocks = []
+
+    current_block = start_block 
+
+    #Starting at the block the input transaction is in, loop through blocks until you reach the longest time the mixer said it would take to return your coins
+    #If the block is between start and end times, add it to the anonymity set
+    while current_block['time'] < start_block['time']+3600*end_time:
+        if current_block['time'] > start_block['time']+3600*start_time:
+            blocks += [current_block]
+        height += 1
+        current_block = get_block_from_height(height)
+
+    return blocks
+
 def get_input_addrs(tx):
     """ Takes tx object and returns the input addresses associated. """
     try:
