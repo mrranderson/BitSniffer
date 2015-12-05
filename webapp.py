@@ -7,7 +7,7 @@ if 'backend' not in ls('.'):
 
 from lib.bottle import route, run, template, get, post, request, view, \
         static_file
-from backend.analysis import direct_link_exists
+from backend.analysis import direct_link_exists, get_anonymity_set
 
 @route('/static/:path#.+#', name='static')
 def static(path):
@@ -47,21 +47,16 @@ def anonymity_set_prompt():
 @post('/anonymity_set')
 def anonymity_set_handle():
     tx_in_hash = request.forms.get('tx_in_hash')
-    tx_out_hash = request.forms.get('tx_out_hash')
-    user_start_addr = request.forms.get('user_start_addr')
-    user_end_addr = request.forms.get('user_end_addr')
-    mixer_input_addr = request.forms.get('mixer_input_addr')
+    tx_value = request.forms.get('tx_value')
     start_time = request.forms.get('start_time')
     end_time = request.forms.get('end_time')
-    #amount_mixed = request.forms.get('amount_mixed')
     flat_fee = request.forms.get('flat_fee')
     percent_fee_lower = request.forms.get('percent_fee_lower')
     percent_fee_upper = request.forms.get('percent_fee_upper')
  
-    anonymity_set = get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr,
-        user_end_addr, mixer_input_addr, start_time, end_time, flat_fee, percent_fee_lower, percent_fee_upper)
-
-    #print(anonymity_set)
+    anonymity_set = get_anonymity_set(tx_in_hash, tx_value, start_time,
+            end_time, flat_fee, percent_fee_lower, percent_fee_upper)
+    print(anonymity_set)
     return "There are %d transactions in the anonymity set." % len(anonymity_set)
 
 

@@ -1,4 +1,4 @@
-from backend import blockchain_info
+from backend import blockchain_info as bi
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
@@ -13,8 +13,8 @@ def _build_tx_edges(blocks, first_tx):
     for block in blocks:
         new_edges = []
         for tx in block['tx']:
-            input_addrs = blockchain_info.get_input_addrs(tx)
-            output_addrs = blockchain_info.get_output_addrs(tx)
+            input_addrs = bi.get_input_addrs(tx)
+            output_addrs = bi.get_output_addrs(tx)
             known_output_addrs = [x[1] for x in edges]
 
             for input_addr in input_addrs:
@@ -56,8 +56,8 @@ def _build_tx_edges_dict(blocks, first_tx):
 
     for block in blocks:
         for tx in block['tx']:
-            input_addrs = blockchain_info.get_input_addrs(tx)
-            output_addrs = blockchain_info.get_output_addrs(tx)
+            input_addrs = bi.get_input_addrs(tx)
+            output_addrs = bi.get_output_addrs(tx)
 
             for input_addr in input_addrs:
                 if input_addr not in graph:
@@ -170,9 +170,9 @@ def direct_link_exists(tx_in_hash,
 
     # fetch the transactions going into and out of the mixing service
     # also fetch block objects between the two
-    tx_in = blockchain_info.get_tx(tx_in_hash)
-    tx_out = blockchain_info.get_tx(tx_out_hash)
-    blocks = blockchain_info.get_blocks_between_txs(tx_in, tx_out)
+    tx_in = bi.get_tx(tx_in_hash)
+    tx_out = bi.get_tx(tx_out_hash)
+    blocks = bi.get_blocks_between_txs(tx_in, tx_out)
 
     if verbose:
         print("Building transaction graph...\n")
@@ -206,9 +206,14 @@ def get_output_value_to_addr(tx, addr):
         if str(out['addr']) == addr:
             return int(out['value'])
 
-def get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
-        mixer_input_addr, start_time, end_time, flat_fee, percent_fee_lower,
-        percent_fee_upper, verbose=False): 
+def get_anonymity_set(tx_in_hash, 
+                      tx_value, 
+                      start_time, 
+                      end_time, 
+                      flat_fee, 
+                      percent_fee_lower,
+                      percent_fee_upper, 
+                      verbose=False): 
     """
     Returns a set of tx hashes that fall within the range. start_time and
     end_time in hours, flat_fee in satoshis.
@@ -219,34 +224,25 @@ def get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
 
     anonymity_set = []
 
-    tx_in = blockchain_info.get_tx(tx_in_hash)
-    tx_out = blockchain_info.get_tx(tx_out_hash)
-    tx_value = get_output_value_to_addr(tx_in, mixer_input_addr)
-    ff = int(flat_fee)
+    tx_in = bi.get_tx(tx_in_hash)
+    #tx_value = get_output_value_to_addr(tx_in, mixer_input_addr)
+    ff = float(flat_fee)
     pfl = float(percent_fee_lower)
     pfu = float(percent_fee_upper)
+    tx_value = float(tx_value)
+    start_time = float(start_time)
+    end_time = float(end_time)
 
-    interval = (tx_value-ff-int(tx_value*pfu), tx_value-ff-int(tx_value*pfl))
-    blocks = blockchain_info.get_blocks_in_time_range(tx_in, int(start_time), int(end_time))  
+    print(tx_value)
+
+    interval = (int(tx_value-ff-(tx_value*pfu)),
+                int(tx_value-ff-(tx_value*pfl)))
+    blocks = bi.get_blocks_in_time_range(tx_in, start_time, end_time)  
 
     for block in blocks:
-        anonymity_set += find_tx_by_output_amt(block, interval)
+        anonymity_set += bi.find_tx_by_output_amt(block, interval)
 
     return anonymity_set
-
-def find_tx_by_output_amt(block, interval):
-    """ Interval is a tuple of (int, int) (satoshis) 
-    that gives the range, inclusive, we should return tx's for. """ 
-
-    possible_range = range(interval[0], interval[1]+1)
-    possible_txs = []
-    for tx in block['tx']:
-        for output in tx['out']:
-            if output['value'] in possible_range:
-                possible_txs.append(tx)
-                break
-    
-    return possible_txs
 
 if __name__ == "__main__":
     #direct_link_exists(       

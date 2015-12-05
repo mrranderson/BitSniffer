@@ -75,7 +75,20 @@ def get_blocks_between_txs(tx_in, tx_out):
     return [get_block_from_height(h) for h in range(start_height, end_height+1)]
 
 def get_blocks_in_time_range(tx_in, start_time, end_time):
-    """Return a list of all blocks starting start_time after tx_in, ending end_time after tx_in, where start_time and end_time are in hours after the initial transaction"""
+    """
+    Return a list of all blocks starting start_time after tx_in, ending end_time after 
+    tx_in, where start_time and end_time are in hours after the initial transaction
+
+    Args: 
+        tx_in, object, a representation of the JSON that blockchain.info's API
+            provides for transactions
+        start_time, int, starting offset (in hours) from tx_in's block 
+        end_time, int, ending offset (in hours) from tx_in's block
+
+    Returns:
+        blocks, list, a list of block objects (obtained from blockchain.info's
+            API) that were discovered between the given time range.
+    """
     start_block = get_block_from_height(tx_in['block_height'])
 
     start_height = tx_in['block_height']
@@ -84,8 +97,9 @@ def get_blocks_in_time_range(tx_in, start_time, end_time):
 
     current_block = start_block 
 
-    #Starting at the block the input transaction is in, loop through blocks until you reach the longest time the mixer said it would take to return your coins
-    #If the block is between start and end times, add it to the anonymity set
+    # Starting at the block the input transaction is in, loop through blocks until 
+    # you reach the longest time the mixer said it would take to return your coins
+    # If the block is between start and end times, add it to the anonymity set
     while current_block['time'] < start_block['time']+3600*end_time:
         if current_block['time'] > start_block['time']+3600*start_time:
             blocks += [current_block]
@@ -93,6 +107,24 @@ def get_blocks_in_time_range(tx_in, start_time, end_time):
         current_block = get_block_from_height(height)
 
     return blocks
+
+def find_tx_by_output_amt(block, interval):
+    """ Interval is a tuple of (int, int) (satoshis) 
+    that gives the range, inclusive, we should return tx's for. """ 
+
+    possible_range = range(interval[0], interval[1]+1)
+    possible_txs = []
+    for tx in block['tx']:
+        for output in tx['out']:
+            if output['value'] in possible_range:
+                possible_txs.append(tx)
+                break
+    
+    return possible_txs
+
+def get_fees(tx):
+    """ Takes tx object and returns the transaction fees, in satoshis """
+
 
 def get_input_addrs(tx):
     """ Takes tx object and returns the input addresses associated. """

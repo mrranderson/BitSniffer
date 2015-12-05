@@ -40,32 +40,31 @@
       <form action="/direct_link" method="post">
           <div class="form-group">
             <label>tx_in_hash:<label> 
-            <input name="tx_in_hash" class="form-control" type="text" />
+            <input name="tx_in_hash" class="form-control" type="text" 
+            value="490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5"/>
           </div>
           <div class="form-group">
             <label>tx_out_hash:<label> 
-            <input name="tx_out_hash" class="form-control" type="text" />
+            <input name="tx_out_hash" class="form-control" type="text" 
+            value="cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17"/>
           </div>
           <div class="form-group">
             <label>user_start_addr:<label> 
-            <input name="user_start_addr" class="form-control" type="text" />
+            <input name="user_start_addr" class="form-control" type="text" 
+            value="1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm"/>
           </div>
           <div class="form-group">
             <label>user_end_addr:<label> 
-            <input name="user_end_addr" class="form-control" type="text" />
+            <input name="user_end_addr" class="form-control" type="text" 
+            value="1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM"/>
           </div>
           <div class="form-group">
             <label>mixer_input_addr:<label> 
-            <input name="mixer_input_addr" class="form-control" type="text" />
+            <input name="mixer_input_addr" class="form-control" type="text" 
+            value="1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L"/>
           </div>
           <input value="Analyze" type="submit" />
       </form>
-      <p>Sample data:</p>
-      <p>490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5</p>
-      <p>cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17</p>
-      <p>1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm</p>
-      <p>1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM</p>
-      <p>1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L</p>
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

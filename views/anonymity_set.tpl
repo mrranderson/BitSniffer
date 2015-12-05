@@ -40,52 +40,41 @@
       <form action="/anonymity_set" method="post">
           <div class="form-group">
             <label>tx_in_hash:<label> 
-            <input name="tx_in_hash" class="form-control" type="text" />
+            <input name="tx_in_hash" class="form-control" type="text"
+            value="0197dabc3c31c8221b5d7883a9d03240bcf7a3042e1bf6dcc26c8d3aa60c58ab" />
           </div>
           <div class="form-group">
-            <label>tx_out_hash:<label> 
-            <input name="tx_out_hash" class="form-control" type="text" />
+            <label>tx_value (in satoshis):<label> 
+            <input name="tx_value" class="form-control" type="text" 
+            value="1523000"/>
           </div>
           <div class="form-group">
-            <label>user_start_addr:<label> 
-            <input name="user_start_addr" class="form-control" type="text" />
+            <label>start_time (in hours):<label> 
+            <input name="start_time" class="form-control" type="text" 
+            value="0.0"/>
           </div>
           <div class="form-group">
-            <label>user_end_addr:<label> 
-            <input name="user_end_addr" class="form-control" type="text" />
+            <label>end_time (in hours):<label> 
+            <input name="end_time" class="form-control" type="text" 
+            value="0.75"/>
           </div>
           <div class="form-group">
-            <label>mixer_input_addr:<label> 
-            <input name="mixer_input_addr" class="form-control" type="text" />
+            <label>Flat Fee (in Satoshis):<label> 
+            <input name="flat_fee" class="form-control" type="text" 
+            value="50000"/>
           </div>
           <div class="form-group">
-            <label>start_time:<label> 
-            <input name="start_time" class="form-control" type="text" />
+            <label>percent_fee_lower (from 0.0 to 1.0):<label> 
+            <input name="percent_fee_lower" class="form-control" type="text" 
+            value=".005"/>
           </div>
           <div class="form-group">
-            <label>end_time:<label> 
-            <input name="end_time" class="form-control" type="text" />
-          </div>
-          <div class="form-group">
-            <label>Flat Fee:<label> 
-            <input name="flat_fee" class="form-control" type="text" />
-          </div>
-          <div class="form-group">
-            <label>percent_fee_lower:<label> 
-            <input name="percent_fee_lower" class="form-control" type="text" />
-          </div>
-          <div class="form-group">
-            <label>percent_fee_upper:<label> 
-            <input name="percent_fee_upper" class="form-control" type="text" />
+            <label>percent_fee_upper (from 0.0 to 1.0):<label> 
+            <input name="percent_fee_upper" class="form-control" type="text"
+            value=".006"/>
           </div>
           <input value="Analyze" type="submit" />
       </form>
-      <p>Sample data:</p>
-      <p>490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5</p>
-      <p>cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17</p>
-      <p>1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm</p>
-      <p>1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM</p>
-      <p>1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L</p>
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
