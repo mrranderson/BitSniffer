@@ -1,5 +1,4 @@
-#from backend import blockchain_info
-import blockchain_info
+from backend import blockchain_info
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
