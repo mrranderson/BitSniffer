@@ -31,7 +31,7 @@ def direct_link_handle():
     user_end_addr = request.forms.get('user_end_addr')
     mixer_input_addr = request.forms.get('mixer_input_addr')
 
-    res = backend.direct_link_exists (tx_in_hash, tx_out_hash, user_start_addr,
+    res = backend.analysis.direct_link_exists (tx_in_hash, tx_out_hash, user_start_addr,
         user_end_addr, mixer_input_addr)
 
     print(res)
@@ -58,10 +58,10 @@ def anonymity_set_handle():
     percent_fee_lower = request.forms.get('percent_fee_lower')
     percent_fee_upper = request.forms.get('percent_fee_upper')
  
-    anonymity_set = backend.get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr,
+    anonymity_set = backend.analysis.get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr,
         user_end_addr, mixer_input_addr, start_time, end_time, flat_fee, percent_fee_lower, percent_fee_upper)
 
-    print(anonymity_set)
+    #print(anonymity_set)
     return "There are %d transactions in the anonymity set." % len(anonymity_set)
 
 

@@ -205,7 +205,7 @@ def direct_link_exists(tx_in_hash,
 def get_output_value_to_addr(tx, addr):
     for out in tx['out']:
         if str(out['addr']) == addr:
-            return out['value']
+            return int(out['value'])
 
 def get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
         mixer_input_addr, start_time, end_time, flat_fee, percent_fee_lower,
@@ -222,10 +222,13 @@ def get_anonymity_set(tx_in_hash, tx_out_hash, user_start_addr, user_end_addr,
 
     tx_in = blockchain_info.get_tx(tx_in_hash)
     tx_out = blockchain_info.get_tx(tx_out_hash)
-    blocks = blockchain_info.get_blocks_between_txs(tx_in, tx_out)
-
     tx_value = get_output_value_to_addr(tx_in, mixer_input_addr)
-    interval = (tx_value-flat_fee-int(tx_value*percent_fee_upper), tx_value-flat_fee-int(tx_value*percent_fee_lower))
+    ff = int(flat_fee)
+    pfl = float(percent_fee_lower)
+    pfu = float(percent_fee_upper)
+
+    interval = (tx_value-ff-int(tx_value*pfu), tx_value-ff-int(tx_value*pfl))
+    blocks = blockchain_info.get_blocks_in_time_range(tx_in, int(start_time), int(end_time))  
 
     for block in blocks:
         anonymity_set += find_tx_by_output_amt(block, interval)
@@ -255,7 +258,7 @@ if __name__ == "__main__":
         '1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM',
         '1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L',
         0,
-        100,
+        5,
         0,
         .05,
         .06,
