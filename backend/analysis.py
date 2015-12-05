@@ -221,9 +221,6 @@ def get_anonymity_set(tx_in_hash,
     The anonymity set is a set of transactions which could be mistaken for the
     actual output transaction from the mixer.
 
-    Returns a set of tx hashes that fall within the range. start_time and
-    end_time in hours, flat_fee in satoshis.
-
     Args:
         tx_in_hash, string, hash of input transaction to the mixer
         tx_value, int, amount of BTC sent to the mixer, in Satoshi
