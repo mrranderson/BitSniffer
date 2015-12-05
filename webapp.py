@@ -31,7 +31,7 @@ def direct_link_handle():
     user_end_addr = request.forms.get('user_end_addr')
     mixer_input_addr = request.forms.get('mixer_input_addr')
 
-    res = backend.analysis.direct_link_exists (tx_in_hash, tx_out_hash, user_start_addr,
+    res = direct_link_exists (tx_in_hash, tx_out_hash, user_start_addr,
         user_end_addr, mixer_input_addr)
 
     print(res)
