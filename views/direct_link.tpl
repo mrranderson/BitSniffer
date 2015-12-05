@@ -40,41 +40,48 @@
     <div class="container padded">
       <form action="/direct_link" method="post" class="form-horizontal">
           <div class="form-group">
-            <label class="col-sm-2">tx_in_hash:</label> 
-            <div class="col-sm-10">
+            <label class="col-sm-3">Entering Transaction Hash:</label> 
+            <div class="col-sm-9">
               <input name="tx_in_hash" class="form-control" type="text" 
               value="490898199a566dcb32a4a9cf45cc7d3cb5f1372e1703c90ad7845acf400f17a5"/>
+              <p class="help-block">The hash of the transaction entering the mixer.</p>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2">tx_out_hash:</label> 
-            <div class="col-sm-10">
+            <label class="col-sm-3">Exiting Transaction Hash:</label> 
+            <div class="col-sm-9">
               <input name="tx_out_hash" class="form-control" type="text" 
               value="cb9e8ec8ad02d0edd7b7d9abb85b2312304ffda263493e5ee96e83bc2e78ce17"/>
+              <p class="help-block">The hash of the transaction leaving the
+              mixer and entering your wallet.</p>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2">user_start_addr:</label> 
-            <div class="col-sm-10">
+            <label class="col-sm-3">Your Sending Address:</label> 
+            <div class="col-sm-9">
               <input name="user_start_addr" class="form-control" type="text" 
               value="1B1tDpsuUBKu25Ktqp8ohziw7qN43FjEQm"/>
+              <p class="help-block">The address your mixed coins started in.</p>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2">user_end_addr:</label> 
-            <div class="col-sm-10">
+            <label class="col-sm-3">Your Receiving Address:</label> 
+            <div class="col-sm-9">
               <input name="user_end_addr" class="form-control" type="text" 
               value="1MV8oVUWVSLTbWDh8p2hof6J7hfnEm4UXM"/>
+              <p class="help-block">The address your mixed coins ended in.</p>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2">mixer_input_addr:</label> 
-            <div class="col-sm-10">
+            <label class="col-sm-3">Mixer's Receiving Address:</label> 
+            <div class="col-sm-9">
               <input name="mixer_input_addr" class="form-control" type="text" 
               value="1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L"/>
+              <p class="help-block">The address the mixer told you to send coins
+              to.</p>
             </div>
           </div>
-          <input value="Analyze" class="col-sm-offset-2 col-sm-10 btn btn-default" type="submit" />
+          <input value="Analyze" class="col-sm-offset-3 col-sm-9 btn btn-default" type="submit" />
       </form>
     </div>
 
