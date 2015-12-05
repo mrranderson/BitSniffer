@@ -2,10 +2,48 @@ import os
 
 if 'backend' in os.listdir('.'):
     from backend import blockchain_info as bi
-    from backend import linkability_tests
 else:
     import blockchain_info as bi
-    import linkability_tests
+
+class LinkabilityTest:
+    def __init__(self):
+        self.name = "LinkabilityTest"
+
+    def test(self, adr1, adr2, blocks):
+        """
+        """
+
+        print("LinkabilityTest: test()")
+
+class TotalAmountSentTest(LinkabilityTest):
+    """
+    """
+
+    def test(self, adr1, adr2, blocks):
+        """
+        """
+
+        print("TotalAmountSentTest: test()")
+
+class IndividualAmountSentTest(LinkabilityTest):
+    """
+    """
+
+    def test(self, adr1, adr2, blocks):
+        """
+        """
+
+        print("IndividualAmountSentTest: test()")
+
+class DirectLinkExistsTest(LinkabilityTest):
+    """
+    """
+
+    def test(self, adr1, adr2, blocks):
+        """
+        """
+
+        print("DirectLinkTest: test()")
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
