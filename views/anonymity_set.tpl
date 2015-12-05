@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="static/css/bootstrap.min.css">
+        <link rel="stylesheet" href="static/css/custom.css">
         <style>
             body {
                 padding-top: 50px;
@@ -37,7 +38,7 @@
     </nav>
 
     <div class="container">
-      <form action="/anonymity_set" method="post">
+      <form action="/anonymity_set_results" method="post">
           <div class="form-group">
             <label>tx_in_hash:<label> 
             <input name="tx_in_hash" class="form-control" type="text"

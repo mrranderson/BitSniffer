@@ -115,16 +115,23 @@ def find_tx_by_output_amt(block, interval):
     possible_range = range(interval[0], interval[1]+1)
     possible_txs = []
     for tx in block['tx']:
+        fee = get_fee(tx)
         for output in tx['out']:
-            if output['value'] in possible_range:
+            if output['value'] - fee in possible_range:
                 possible_txs.append(tx)
                 break
     
     return possible_txs
 
-def get_fees(tx):
-    """ Takes tx object and returns the transaction fees, in satoshis """
-
+def get_fee(tx):
+    """ Takes tx object and returns the transaction fee in satoshis """
+    outputs = [output['value'] for output in tx['out']]
+    try:
+        inputs = [input['prev_out']['value'] for input in tx['inputs']]
+    except KeyError:
+        # This happens when there's a coinbase transaction
+        inputs = []
+    return sum(inputs) - sum(outputs)
 
 def get_input_addrs(tx):
     """ Takes tx object and returns the input addresses associated. """

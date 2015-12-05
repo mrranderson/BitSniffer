@@ -44,7 +44,8 @@ def direct_link_handle():
 def anonymity_set_prompt():
     return {}
 
-@post('/anonymity_set')
+@post('/anonymity_set_results')
+@view('anonymity_set_results')
 def anonymity_set_handle():
     tx_in_hash = request.forms.get('tx_in_hash')
     tx_value = request.forms.get('tx_value')
@@ -55,10 +56,13 @@ def anonymity_set_handle():
     percent_fee_upper = request.forms.get('percent_fee_upper')
  
     anonymity_set = get_anonymity_set(tx_in_hash, tx_value, start_time,
-            end_time, flat_fee, percent_fee_lower, percent_fee_upper)
-    print(anonymity_set)
-    return "There are %d transactions in the anonymity set." % len(anonymity_set)
-
+            end_time, flat_fee, percent_fee_lower, percent_fee_upper,
+            verbose=True)
+    
+    return { 
+            "len": len(anonymity_set), 
+            "results": [x['hash'] for x in anonymity_set]
+        }
 
 if __name__ == '__main__':
     run(host='localhost', port=8080, debug=True)
