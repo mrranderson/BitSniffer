@@ -147,9 +147,19 @@ def find_tx_by_output_amt(block, interval):
     possible_outputs = []
     for tx in block['tx']:
         fee = get_fee(tx)
+        total_output = sum([output['value'] for output in tx['out']])
         for output in tx['out']:
-            if output['value'] in range(interval[0]-fee, interval[1]-fee+1):
-                possible_outputs.append({"tx_hash": tx['hash'], "addr": output['addr']})
+            try:
+                proportion = output['value']/total_output
+            except ZeroDivisionError:
+                proportion = 0
+            interval_with_fee = range(interval[0] - int(fee * proportion),
+                    interval[1] - int(fee * proportion) + 1)
+            if output['value'] in interval_with_fee:
+                possible_outputs.append({
+                    "tx_hash": tx['hash'], 
+                    "addr"   : output['addr']
+                })
                 break
     
     return possible_outputs
