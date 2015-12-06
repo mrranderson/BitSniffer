@@ -42,9 +42,11 @@
       <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6" style="text-align:center;display:block;">
-          %for addr in path:
-            <h4><a target="_blank" href="https://blockchain.info/address/{{addr}}">{{addr}}</a></h4>
-            <span class="glyphicon glyphicon-arrow-down"></span>
+          %if path:
+            %for addr in path:
+              <h4><a target="_blank" href="https://blockchain.info/address/{{addr}}">{{addr}}</a></h4>
+              <span class="glyphicon glyphicon-arrow-down"></span>
+            %end
           %end
           <h4><a target="_blank" href="https://blockchain.info/address/{{last_addr}}">{{last_addr}}</a></h4>
         </div>

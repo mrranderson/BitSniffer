@@ -33,11 +33,12 @@ def direct_link_handle():
             request.forms.get('mixer_input_addr'),]
 
     path = get_path(*args)
+    print(type(path))
 
     return {
             "msg"       : "These are linked!" if path else "These are not linked.",
-            "path"      : path[:-1],
-            "last_addr" : path[-1]
+            "path"      : path[:-1] if path else None,
+            "last_addr" : path[-1] if path else None
         }
 
 @get('/anonymity_set')

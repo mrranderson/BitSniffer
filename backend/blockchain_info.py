@@ -146,7 +146,7 @@ def find_tx_by_output_amt(block, interval):
 
     possible_outputs = []
     for tx in block['tx']:
-        fee = get_fee(tx)
+        fee = 0 #get_fee(tx)
         total_output = sum([output['value'] for output in tx['out']])
         for output in tx['out']:
             try:
