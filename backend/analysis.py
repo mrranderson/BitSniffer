@@ -8,28 +8,41 @@ else:
 class LinkabilityTest:
     def __init__(self):
         self.name = "LinkabilityTest"
+        self.verbose = False
 
-    def test(self, adr1, adr2, blocks):
+    def test(self, addr1, addr2, blocks):
         """
         """
 
         print("LinkabilityTest: test()")
 
+        return -1
+
 class TotalAmountSentTest(LinkabilityTest):
-    """
+    """This compares the total amount sent and received between two addresses.
+    If two addresses have similar amounts sent and received, we consider those
+    addresses as being linked.
     """
 
-    def test(self, adr1, adr2, blocks):
-        """
+    def test(self, addr1, addr2, blocks):
+        """We assume addr1 sends BTC to addr2. We return a value which is 1 if
+        the amount sent is equal to the amount received. As these amounts become
+        more different, the value we return approaches 0.
+
+        The range of values we return is 0 -> 1, inclusive.
         """
 
-        print("TotalAmountSentTest: test()")
+        addr1_total_sent = bi.get_addr(addr1)["total_sent"]
+        addr2_total_received = bi.get_addr(addr2)["total_received"]
+
+        return 1 - abs(addr1_total_sent - addr2_total_received) / \
+            max(addr1_total_sent, addr2_total_received)
 
 class IndividualAmountSentTest(LinkabilityTest):
-    """
+    """This compares the transactions from two addresses. 
     """
 
-    def test(self, adr1, adr2, blocks):
+    def test(self, addr1, addr2, blocks):
         """
         """
 
@@ -39,11 +52,16 @@ class DirectLinkExistsTest(LinkabilityTest):
     """
     """
 
-    def test(self, adr1, adr2, blocks):
+    def test(self, addr1, addr2, blocks):
         """
         """
 
         print("DirectLinkTest: test()")
+
+class TransactionFrequencyTest(LinkabilityTest):
+    """
+    """
+    
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
@@ -124,17 +142,17 @@ def _build_tx_edges_dict(blocks, first_tx):
     queue.append(first_tx[1])
 
     while len(queue) > 0:
-        adr = queue.pop()
+        addr = queue.pop()
 
-        if adr not in sub_graph:
-            sub_graph[adr] = set()
+        if addr not in sub_graph:
+            sub_graph[addr] = set()
 
-        if adr in graph:
-            for adr2 in graph[adr]:
-                sub_graph[adr].add(adr2)
+        if addr in graph:
+            for addr2 in graph[addr]:
+                sub_graph[addr].add(addr2)
 
-                if adr2 not in queue:
-                    queue.append(adr2)
+                if addr2 not in queue:
+                    queue.append(addr2)
 
     return sub_graph
 
@@ -229,8 +247,8 @@ def direct_link_exists(tx_in_hash,
     if verbose:
         print("Graph: (num sending addresses = %d)\n" % (len(graph)))
 
-        for adr in graph:
-            print("%s \n--> %s" % (adr, graph[adr]))
+        for addr in graph:
+            print("%s \n--> %s" % (addr, graph[addr]))
 
         print("\nAttempting to find a path...\n")
 
@@ -300,7 +318,7 @@ def get_anonymity_set(tx_in_hash,
 
     return anonymity_set
 
-def test_linkability(adr1, adr2):
+def test_linkability(addr1, addr2):
     """
     """
 
@@ -313,7 +331,7 @@ def test_linkability(adr1, adr2):
     blocks_to_search_over = None
 
     for test in tests:
-        test.test(adr1, adr2, blocks_to_search_over)
+        test.test(addr1, addr2, blocks_to_search_over)
 
 if __name__ == "__main__":
     test_linkability(None, None)

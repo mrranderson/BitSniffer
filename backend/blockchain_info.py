@@ -55,6 +55,34 @@ def get_addr(addr):
     """ Returns addr object """
     return _retrieve(addr, "ADDR")
 
+def get_all_sent_txs_for_addr(addr):
+    """Given an address, this returns a list of tx objects (as defined by the
+    blockchain.info API) that represent outgoing transactions from the address.
+    """
+
+    addr_obj = get_addr(addr)
+    sent_txs = []
+
+    for tx in addr_obj["txs"]:
+        if addr in get_input_addrs(tx):
+            sent_txs.append(tx)
+
+    return sent_txs
+
+def get_all_received_txs_for_addr(addr):
+    """Given an address, this returns a list of tx objects (as defined by the
+    blockchain.info API) that represent incoming transactions from the address.
+    """
+
+    addr_obj = get_addr(addr)
+    received_txs = []
+
+    for tx in addr_obj["txs"]:
+        if addr in get_output_addrs(tx):
+            received_txs.append(tx)
+
+    return received_txs
+
 def get_block(block_hash): 
     """ Returns block object """
     return _retrieve(block_hash, "BLOCK")
