@@ -209,12 +209,12 @@ def _find_path(graph, start_addr, end_addr):
 
     return None
 
-def direct_link_exists(tx_in_hash, 
-                       tx_out_hash, 
-                       user_start_addr, 
-                       user_end_addr,
-                       mixer_input_addr,
-                       verbose=False):
+def get_path(tx_in_hash, 
+             tx_out_hash, 
+             user_start_addr, 
+             user_end_addr,
+             mixer_input_addr,
+             verbose=False):
     """Returns a list of transactions that link the two addresses.
 
     Args:
@@ -254,15 +254,13 @@ def direct_link_exists(tx_in_hash,
 
     path = _find_path(graph, user_start_addr, user_end_addr)
 
-    if path:
-        if verbose:
-            print("Found a path!\n")
-            print(path)
-            print("\n")
+    if verbose and path:
+        print("Found a path!\n")
+        print(path)
+        print("\n")
 
-        return True
-    else:
-        return False
+    return path
+
 
 def get_anonymity_set(tx_in_hash, 
                       tx_value, 
@@ -305,16 +303,21 @@ def get_anonymity_set(tx_in_hash,
     start_time = float(start_time)
     end_time = float(end_time)
 
-    interval = (int(tx_value-ff-(tx_value*pfu)),
-                int(tx_value-ff-(tx_value*pfl)))
+    interval = (int(tx_value - (ff + tx_value * pfu)),
+                int(tx_value - (ff + tx_value * pfl)))
     blocks = bi.get_blocks_in_time_range(tx_in, start_time, end_time)  
 
-    for block in blocks:
-        anonymity_set += bi.find_tx_by_output_amt(block, interval)
+    print(list(map(lambda x: x['height'], blocks)))
+
+    for i, block in enumerate(blocks):
+        new_txs = bi.find_tx_by_output_amt(block, interval)
+        for x in new_txs:
+            x['offset'] = i+1
+        anonymity_set += new_txs
 
     if verbose:
         for x in anonymity_set:
-            print(x['hash'])
+            print(x)
 
     return anonymity_set
 
