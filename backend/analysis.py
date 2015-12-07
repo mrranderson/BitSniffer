@@ -38,8 +38,34 @@ class TotalAmountSentReceivedTest(LinkabilityTest):
         addr1_total_sent = bi.get_addr(addr1)["total_sent"]
         addr2_total_received = bi.get_addr(addr2)["total_received"]
 
-        return 1 - abs(addr1_total_sent - addr2_total_received) / \
-            max(addr1_total_sent, addr2_total_received)
+        return 1.0 - abs(addr1_total_sent - addr2_total_received) / \
+            float(max(addr1_total_sent, addr2_total_received))
+
+class AverageAmountSentReceivedTest(LinkabilityTest):
+    """This compares the total amount sent and received between two addresses.
+    If two addresses have similar amounts sent and received, we consider those
+    addresses as being linked.
+    """
+
+    def __init__(self):
+        self.name = "AverageAmountSentReceivedTest"
+
+    def test(self, addr1, addr2, blocks):
+        """We assume addr1 sends BTC to addr2. We return a value which is 1 if
+        the amount sent is equal to the amount received. As these amounts become
+        more different, the value we return approaches 0.
+
+        The range of values we return is 0 -> 1, inclusive.
+        """
+
+        num_addr1_txs = len(bi.get_all_sent_txs_for_addr(addr1))
+        num_addr2_txs = len(bi.get_all_received_txs_for_addr(addr2))
+
+        addr1_average_sent = float(bi.get_addr(addr1)["total_sent"])/num_addr1_txs
+        addr2_average_received = float(bi.get_addr(addr2)["total_received"])/num_addr2_txs
+
+        return 1.0 - abs(addr1_average_sent - addr2_average_received) / \
+            float(max(addr1_average_sent, addr2_average_received))
 
 class IndividualAmountSentTest(LinkabilityTest):
     """This compares the transactions from two addresses. 
@@ -79,12 +105,39 @@ class TransactionFrequencyTest(LinkabilityTest):
         self.name = "TransactionFrequencyTest"
 
     def test(self, addr1, addr2, blocks):
-        """
+        """This test compares the 
         """
 
-        print("TransactionFrequencyTest: test()")
+        addr1_txs = bi.get_all_sent_txs_for_addr(addr1)
+        num_addr1_txs = len(addr1_txs)
 
-        return -1
+        youngest_tx = addr1_txs[0]
+        oldest_tx = addr1_txs[0]
+
+        for tx in addr1_txs:
+            if tx['block_height'] < youngest_tx['block_height']:
+                youngest_tx = tx
+            elif tx['block_height'] > oldest_tx['block_height']:
+                oldest_tx = tx
+
+        addr1_frequency = float(num_addr1_txs)/(oldest_tx['block_height'] - youngest_tx['block_height'] + 1)
+        
+        addr2_txs = bi.get_all_received_txs_for_addr(addr2)
+        num_addr2_txs = len(addr2_txs)
+
+        youngest_tx = addr2_txs[0]
+        oldest_tx = addr2_txs[0]
+
+        for tx in addr2_txs:
+            if tx['block_height'] < youngest_tx['block_height']:
+                youngest_tx = tx
+            elif tx['block_height'] > oldest_tx['block_height']:
+                oldest_tx = tx
+
+        addr2_frequency = float(num_addr2_txs)/(oldest_tx['block_height'] - youngest_tx['block_height'] + 1)
+
+        return 1 - abs(addr1_frequency - addr2_frequency) / \
+            max(addr1_frequency, addr2_frequency)
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
@@ -350,8 +403,10 @@ def test_linkability(addr1, addr2, verbose=False):
 
     tests = [
         TotalAmountSentReceivedTest(),
+        AverageAmountSentReceivedTest(),
         IndividualAmountSentTest(),
-        DirectLinkExistsTest()
+        DirectLinkExistsTest(),
+        TransactionFrequencyTest()
     ]
 
     # blocks_to_search_over = bi.get_blocks_in_addr_range(addr1, addr2, 
@@ -363,16 +418,17 @@ def test_linkability(addr1, addr2, verbose=False):
     print("num blocks in list: %d" % (len(blocks_to_search_over), ))
 
     for test in tests:
-        print("%s: result = %.30f" % (test.name, test.test(addr1, addr2, 
+        print("%s: result = %f" % (test.name, test.test(addr1, addr2, 
             blocks_to_search_over)))
 
 if __name__ == "__main__":
-    # test_linkability("1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L", 
-    #                  "1MDjCqjwnKmMWPxawpgN1UuDfbMUUgqnWw",
-    #                  verbose=True)
+     #test_linkability("1MDjCqjwnKmMWPxawpgN1UuDfbMUUgqnWw",
+     #                 "1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L", 
+                      #"1MDjCqjwnKmMWPxawpgN1UuDfbMUUgqnWw",
+     #                 verbose=True)
 
-    test_linkability("18heVLNxGLAQ1MG2wxD4UytfvFXmyxWhWs",
-                     "1FEFqzSuK8S6gdmDea6yzmxq2BRJ1mbvz4")
+    test_linkability("1FEFqzSuK8S6gdmDea6yzmxq2BRJ1mbvz4",
+                     "18heVLNxGLAQ1MG2wxD4UytfvFXmyxWhWs")
 
 
     # direct_link_exists(       
