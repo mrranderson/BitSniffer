@@ -39,19 +39,13 @@
     </nav>
 
     <div class="container padded">
-      <h3>There were {{len}} results.</h3>
-      <ul>
-        % for tx in set:
-          <li>
-            <p> 
-              Address <b>{{tx['addr']}}</b> in transaction 
-              <b><a target="_blank"
-              href="https://blockchain.info/tx/{{tx['tx_hash']}}">{{tx['tx_hash']}}</a></b>,
-              {{tx['offset']}} blocks after the first.
-            </p>
-          </li>
-        %end
-      </ul>
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6" style="text-align:center;display:block;">
+          {{results}}
+        </div>
+        <div class="col-md-3"></div>
+      </div>
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

@@ -7,7 +7,7 @@ if 'backend' not in ls('.'):
 
 from lib.bottle import route, run, template, get, post, request, view, \
         static_file
-from backend.analysis import get_path, get_anonymity_set
+from backend.analysis import get_path, get_anonymity_set, test_linkability
 
 @route('/static/:path#.+#', name='static')
 def static(path):
@@ -63,6 +63,20 @@ def anonymity_set_handle():
             "len": len(anonymity_set), 
             "set": anonymity_set
         }
+
+@get('/linkability')
+@view('linkability')
+def linkability_prompt():
+    return {}
+
+@post('/linkability_results')
+@view('linkability_results')
+def linkability_handle():
+    args = [request.forms.get('addr1'), 
+            request.forms.get('addr2')]
+    
+    results = test_linkability(*args)
+    return {"results": results}
 
 if __name__ == '__main__':
     run(host='0.0.0.0', port=8080, debug=True)
