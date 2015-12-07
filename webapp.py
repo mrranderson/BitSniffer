@@ -76,7 +76,28 @@ def linkability_handle():
             request.forms.get('addr2')]
     
     results = test_linkability(*args)
-    return {"results": results}
+    for k,v in results.items():
+        results[k] = str(results[k]*100)
+        results[k] = results[k][:results[k].find('.')+6]
+        results[k] += '%'
+
+    return {
+        "results": results,
+        "namemap": {
+            "OverlappingLifespanTest"      : "Lifespan overlap",
+            "AverageNumInputsOutputsTest"  : "Average number of inputs and outputs",
+            "TransactionFrequencyTest"     : "Transaction frequency",
+            "TotalAmountSentReceivedTest"  : "Total bitcoin sent and received",
+            "AverageAmountSentReceivedTest": "Average amount sent and received"
+        },
+        "explanations": {
+            "OverlappingLifespanTest"      : "",
+            "AverageNumInputsOutputsTest"  : "",
+            "TransactionFrequencyTest"     : "",
+            "TotalAmountSentReceivedTest"  : "",
+            "AverageAmountSentReceivedTest": ""
+        }
+    }
 
 if __name__ == '__main__':
     run(host='0.0.0.0', port=8080, debug=True)

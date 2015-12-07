@@ -39,13 +39,17 @@
     </nav>
 
     <div class="container padded">
-      <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6" style="text-align:center;display:block;">
-          {{results}}
-        </div>
-        <div class="col-md-3"></div>
-      </div>
+      <div class="panel-group">
+        % for k,v in results.items():
+          <div class="panel panel-default"> 
+            <div class="panel-heading">
+              {{namemap[k]}}: <b>{{v}}</b>
+            </div>
+            <div class="panel-body">
+              {{explanations[k]}}
+            </div>
+          </div>
+        % end
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
