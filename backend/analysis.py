@@ -74,6 +74,9 @@ class AverageNumInputsOutputsTest(LinkabilityTest):
 
         ave_num_outputs = sum_of_all_outputs_per_tx / float(len(addr1_txs))
 
+        # print("--> sum outputs = %d, ave outputs = %d, num txs = %d" % (
+        #     sum_of_all_outputs_per_tx, ave_num_outputs, len(addr1_txs)))
+
         addr2_txs = bi.get_all_received_txs_for_addr(addr2)
         sum_of_all_inputs_per_tx = 0
 
@@ -82,8 +85,72 @@ class AverageNumInputsOutputsTest(LinkabilityTest):
 
         ave_num_inputs = sum_of_all_inputs_per_tx / float(len(addr2_txs))
 
+        # print("--> sum inputs = %d, ave inputs = %d, num txs = %d" % (
+        #     sum_of_all_inputs_per_tx, ave_num_inputs, len(addr2_txs)))
+
         return 1.0 - abs(ave_num_inputs - ave_num_outputs) / \
             float(max(ave_num_inputs, ave_num_outputs))
+
+class OverlappingLifespanTest(LinkabilityTest):
+    """
+    """
+
+    def test(self, addr1, addr2, blocks):
+        """
+        """
+
+        addr1_txs = bi.get_all_sent_txs_for_addr(addr1) + \
+            bi.get_all_received_txs_for_addr(addr1)
+        addr1_youngest_tx = addr1_txs[0]
+        addr1_oldest_tx = addr1_txs[0]
+
+        # print("num of txs = %d" % (len(addr1_txs), ))
+
+        # print("1 youngest = %d, oldest = %d" % (addr1_youngest_tx['block_height'],
+        #     addr1_oldest_tx['block_height']))
+
+        for tx in addr1_txs:
+            if tx['block_height'] < addr1_youngest_tx['block_height']:
+                addr1_youngest_tx = tx
+            if tx['block_height'] > addr1_oldest_tx['block_height']:
+                addr1_oldest_tx = tx
+
+        addr1_lifespan = addr1_oldest_tx['block_height'] - \
+            addr1_youngest_tx['block_height'] + 1
+        
+        addr2_txs = bi.get_all_sent_txs_for_addr(addr2) + \
+            bi.get_all_received_txs_for_addr(addr2)
+        addr2_youngest_tx = addr2_txs[0]
+        addr2_oldest_tx = addr2_txs[0]
+
+        # print("2 youngest = %d, oldest = %d" % (addr1_youngest_tx['block_height'],
+        #     addr1_oldest_tx['block_height']))
+
+        for tx in addr2_txs:
+            if tx['block_height'] < addr2_youngest_tx['block_height']:
+                addr2_youngest_tx = tx
+            if tx['block_height'] > addr2_oldest_tx['block_height']:
+                addr2_oldest_tx = tx
+
+        addr2_lifespan = addr2_oldest_tx['block_height'] - \
+            addr2_youngest_tx['block_height'] + 1
+
+        # print("Lifespan addr1 = %d (%d -> %d)" % (
+        #     addr1_lifespan, addr1_youngest_tx['block_height'],
+        #     addr1_oldest_tx['block_height']))
+
+        # print("Lifespan addr2 = %d (%d -> %d)" % (
+        #     addr2_lifespan, addr2_youngest_tx['block_height'],
+        #     addr2_oldest_tx['block_height']))
+
+
+        youngest_of_the_oldest_txs = min(addr1_oldest_tx['block_height'],
+            addr2_oldest_tx['block_height'])
+        oldest_of_the_youngest_txs = max(addr1_youngest_tx['block_height'],
+            addr2_youngest_tx['block_height'])
+
+        return max(0, youngest_of_the_oldest_txs - oldest_of_the_youngest_txs +\
+            1) / float(addr1_lifespan + addr2_lifespan)
 
 class IndividualAmountSentTest(LinkabilityTest):
     """This compares the transactions from two addresses. 
@@ -93,7 +160,7 @@ class IndividualAmountSentTest(LinkabilityTest):
         """
         """
 
-        print("IndividualAmountSentTest: test()")
+        print("IndividualAmountSentTest: UNIMPLEMENTED")
 
         return -1
 
@@ -105,7 +172,7 @@ class DirectLinkExistsTest(LinkabilityTest):
         """
         """
 
-        print("DirectLinkTest: test()")
+        print("DirectLinkTest: UNIMPLEMENTED")
 
         return -1
 
@@ -124,10 +191,13 @@ class TransactionFrequencyTest(LinkabilityTest):
         oldest_tx = addr1_txs[0]
 
         for tx in addr1_txs:
-            if tx['block_height'] < youngest_tx['block_height']:
-                youngest_tx = tx
-            elif tx['block_height'] > oldest_tx['block_height']:
-                oldest_tx = tx
+            try:
+                if tx['block_height'] < youngest_tx['block_height']:
+                    youngest_tx = tx
+                elif tx['block_height'] > oldest_tx['block_height']:
+                    oldest_tx = tx
+            except:
+                pass
 
         addr1_frequency = float(num_addr1_txs)/(oldest_tx['block_height'] - youngest_tx['block_height'] + 1)
         
@@ -138,10 +208,13 @@ class TransactionFrequencyTest(LinkabilityTest):
         oldest_tx = addr2_txs[0]
 
         for tx in addr2_txs:
-            if tx['block_height'] < youngest_tx['block_height']:
-                youngest_tx = tx
-            elif tx['block_height'] > oldest_tx['block_height']:
-                oldest_tx = tx
+            try:
+                if tx['block_height'] < youngest_tx['block_height']:
+                    youngest_tx = tx
+                elif tx['block_height'] > oldest_tx['block_height']:
+                    oldest_tx = tx
+            except:
+                pass
 
         addr2_frequency = float(num_addr2_txs)/(oldest_tx['block_height'] - youngest_tx['block_height'] + 1)
 
@@ -417,6 +490,7 @@ def test_linkability(addr1, addr2, verbose=False):
         # DirectLinkExistsTest(),
         TransactionFrequencyTest(),
         AverageNumInputsOutputsTest(),
+        OverlappingLifespanTest()
     ]
 
     # blocks_to_search_over = bi.get_blocks_in_addr_range(addr1, addr2, 
@@ -427,19 +501,30 @@ def test_linkability(addr1, addr2, verbose=False):
 
     # print("num blocks in list: %d" % (len(blocks_to_search_over), ))
 
+    result = {}
+
     for test in tests:
-        print("%s: result = %f" % (test.__class__.__name__, 
-            test.test(addr1, addr2, blocks_to_search_over)))
+        # print("%s: result = %f" % (test.__class__.__name__, 
+        #     test.test(addr1, addr2, blocks_to_search_over)))
+        result[test.__class__.__name__] = test.test(addr1, addr2, 
+            blocks_to_search_over)
+
+    return result
 
 if __name__ == "__main__":
+    # print("------------")
     test_linkability("1MDjCqjwnKmMWPxawpgN1UuDfbMUUgqnWw",
                      "1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L", 
                      # "1MDjCqjwnKmMWPxawpgN1UuDfbMUUgqnWw",
                      verbose=True)
-
-    # test_linkability("1FEFqzSuK8S6gdmDea6yzmxq2BRJ1mbvz4",
-                     # "18heVLNxGLAQ1MG2wxD4UytfvFXmyxWhWs")
-
+    # print("------------")
+    # these don't actually overlap
+    test_linkability("1BhLzCZGY6dwQYgX4B6NR5sjDebBPNapvv",
+                     "17Ky9n8MAY5VhPJpb7X1sEhrVg9yygme5s")
+    # print("------------")
+    test_linkability("1FEFqzSuK8S6gdmDea6yzmxq2BRJ1mbvz4",
+                     "1BhLzCZGY6dwQYgX4B6NR5sjDebBPNapvv")
+    # print("------------")
 
     # direct_link_exists(       
     # print(len(get_anonymity_set(

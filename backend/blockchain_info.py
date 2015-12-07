@@ -65,9 +65,13 @@ def get_all_sent_txs_for_addr(addr):
     sent_txs = []
 
     for tx in addr_obj["txs"]:
+        input_addrs = get_input_addrs(tx)
+        # print(addr)
+        # print(input_addrs)
         if addr in get_input_addrs(tx):
             sent_txs.append(tx)
 
+    # print("-->", sent_txs)
     return sent_txs
 
 def get_all_received_txs_for_addr(addr):
@@ -184,7 +188,7 @@ def get_blocks_for_two_addresses(addr1, addr2):
         except KeyError:
             pass
 
-    print(blocks.keys())
+    # print(blocks.keys())
 
     return list(blocks.values())
 
@@ -262,11 +266,20 @@ def get_fee(tx):
 
 def get_input_addrs(tx):
     """ Takes tx object and returns the input addresses associated. """
-    try:
-        return [x['prev_out']['addr'] for x in tx['inputs']]
-    except KeyError:
+    addrs = []
+    # print("tx['inputs']: ", tx['inputs'])
+    for x in tx['inputs']:
+        try:
+            addrs.append(x['prev_out']['addr'])
+        except KeyError:
+            continue
+    return addrs
+
+    #try:
+    #    return [x['prev_out']['addr'] for x in tx['inputs']]
+    #except KeyError:
         # This happens when there's a coinbase transaction
-        return []
+    #    return []
 
 def get_output_addrs(tx):
     """ Takes tx object and returns the output addresses associated. """
