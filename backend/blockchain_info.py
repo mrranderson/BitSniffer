@@ -1,6 +1,7 @@
 """
 This contains methods to retrieve and manipulate blockchain information using
-blockchain.info's API. Methods are cached as necessary in _PKL_DIR.
+blockchain.info's API. JSONs returned by the API are cached as necessary in 
+_PKL_DIR.
 """
 import requests as reqs
 import pickle
@@ -231,10 +232,20 @@ def find_tx_by_output_amt(block, interval):
 
     possible_outputs = []
     for tx in block['tx']:
-        fee = get_fee(tx)
+        fee = 0 #get_fee(tx)
+        total_output = sum([output['value'] for output in tx['out']])
         for output in tx['out']:
-            if output['value'] in range(interval[0]-fee, interval[1]-fee+1):
-                possible_outputs.append({"tx_hash": tx['hash'], "addr": output['addr']})
+            try:
+                proportion = output['value']/total_output
+            except ZeroDivisionError:
+                proportion = 0
+            interval_with_fee = range(interval[0] - int(fee * proportion),
+                    interval[1] - int(fee * proportion) + 1)
+            if output['value'] in interval_with_fee:
+                possible_outputs.append({
+                    "tx_hash": tx['hash'], 
+                    "addr"   : output['addr']
+                })
                 break
     
     return possible_outputs

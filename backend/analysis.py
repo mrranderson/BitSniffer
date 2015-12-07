@@ -86,7 +86,6 @@ class TransactionFrequencyTest(LinkabilityTest):
 
         return -1
 
-
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
     those blocks that received coins from the initial transaction.
