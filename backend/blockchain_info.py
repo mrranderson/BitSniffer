@@ -1,6 +1,7 @@
 """
 This contains methods to retrieve and manipulate blockchain information using
-blockchain.info's API. Methods are cached as necessary in _PKL_DIR.
+blockchain.info's API. JSONs returned by the API are cached as necessary in 
+_PKL_DIR.
 """
 import requests as reqs
 import pickle
