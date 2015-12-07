@@ -18,11 +18,14 @@ class LinkabilityTest:
 
         return -1
 
-class TotalAmountSentTest(LinkabilityTest):
+class TotalAmountSentReceivedTest(LinkabilityTest):
     """This compares the total amount sent and received between two addresses.
     If two addresses have similar amounts sent and received, we consider those
     addresses as being linked.
     """
+
+    def __init__(self):
+        self.name = "TotalAmountSentReceivedTest"
 
     def test(self, addr1, addr2, blocks):
         """We assume addr1 sends BTC to addr2. We return a value which is 1 if
@@ -42,15 +45,23 @@ class IndividualAmountSentTest(LinkabilityTest):
     """This compares the transactions from two addresses. 
     """
 
+    def __init__(self):
+        self.name = "IndividualAmountSentTest"
+
     def test(self, addr1, addr2, blocks):
         """
         """
 
         print("IndividualAmountSentTest: test()")
 
+        return -1
+
 class DirectLinkExistsTest(LinkabilityTest):
     """
     """
+
+    def __init__(self):
+        self.name = "DirectLinkExistsTest"
 
     def test(self, addr1, addr2, blocks):
         """
@@ -58,10 +69,23 @@ class DirectLinkExistsTest(LinkabilityTest):
 
         print("DirectLinkTest: test()")
 
+        return -1
+
 class TransactionFrequencyTest(LinkabilityTest):
     """
     """
     
+    def __init__(self):
+        self.name = "TransactionFrequencyTest"
+
+    def test(self, addr1, addr2, blocks):
+        """
+        """
+
+        print("TransactionFrequencyTest: test()")
+
+        return -1
+
 
 def _build_tx_edges(blocks, first_tx):
     """ Given a transaction and a list of blocks, find all other transactions in
@@ -321,23 +345,36 @@ def get_anonymity_set(tx_in_hash,
 
     return anonymity_set
 
-def test_linkability(addr1, addr2):
+def test_linkability(addr1, addr2, verbose=False):
     """
     """
 
     tests = [
-        linkability_tests.TotalAmountSentTest(),
-        linkability_tests.IndividualAmountSentTest(),
-        linkability_tests.DirectLinkExistsTest()
+        TotalAmountSentReceivedTest(),
+        IndividualAmountSentTest(),
+        DirectLinkExistsTest()
     ]
 
-    blocks_to_search_over = None
+    # blocks_to_search_over = bi.get_blocks_in_addr_range(addr1, addr2, 
+    #     verbose=verbose)
+
+    blocks_to_search_over = bi.get_blocks_for_two_addresses(addr1, addr2)
+    print(type(blocks_to_search_over))
+
+    print("num blocks in list: %d" % (len(blocks_to_search_over), ))
 
     for test in tests:
-        test.test(addr1, addr2, blocks_to_search_over)
+        print("%s: result = %.30f" % (test.name, test.test(addr1, addr2, 
+            blocks_to_search_over)))
 
 if __name__ == "__main__":
-    test_linkability(None, None)
+    # test_linkability("1Luke788hdrUcMqdb2sUdtuzcYqozXgh4L", 
+    #                  "1MDjCqjwnKmMWPxawpgN1UuDfbMUUgqnWw",
+    #                  verbose=True)
+
+    test_linkability("18heVLNxGLAQ1MG2wxD4UytfvFXmyxWhWs",
+                     "1FEFqzSuK8S6gdmDea6yzmxq2BRJ1mbvz4")
+
 
     # direct_link_exists(       
     # print(len(get_anonymity_set(

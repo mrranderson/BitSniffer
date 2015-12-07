@@ -96,11 +96,96 @@ def get_block_from_height(block_height):
             bit for the blockchain to come together.""")
     return blocks['blocks'][0]
 
-def get_blocks_between_txs(tx_in, tx_out):
+def get_blocks_between_txs(tx_in, tx_out, verbose=False):
     """ Returns a list of all blocks between the two txs, inclusive """
     start_height =  tx_in['block_height']
     end_height   = tx_out['block_height']
-    return [get_block_from_height(h) for h in range(start_height, end_height+1)]
+
+    if verbose:
+        print("--- begin get_blocks_between_txs() ---")
+        print("starting_height = %d, end_height = %d" % (start_height, 
+            end_height))
+        print("collecting blocks...")
+
+    ans = [get_block_from_height(h) for h in range(start_height, end_height+1)]
+
+    if verbose:
+        print("done!")
+        print("--- end get_blocks_between_txs() ---")
+
+    return ans
+
+def get_blocks_in_addr_range(addr1, addr2, verbose=False):
+    """ Returns a list of blocks that range between the earliest and latest 
+    transactions that addr1 and/or addr2 have participated in.
+    """
+
+    if verbose:
+        print("--- begin get_blocks_in_addr_range() ---")
+        print("collecting transactions sent to addr1")
+
+    txs = get_all_sent_txs_for_addr(addr1)
+
+    if verbose:
+        print("collecting transactions received by addr1")
+
+    txs += get_all_received_txs_for_addr(addr1)
+
+    if verbose:
+        print("collecting transactions sent to addr2")
+
+    txs += get_all_sent_txs_for_addr(addr2)
+
+    if verbose:
+        print("collecting transactions received by addr1")
+
+    txs += get_all_received_txs_for_addr(addr2)
+
+    youngest_tx = txs[0]
+    oldest_tx = txs[0]
+
+    if verbose:
+        print("finding youngest and oldest transactions")
+
+    for tx in txs:
+        if tx['block_height'] < youngest_tx['block_height']:
+            youngest_tx = tx
+
+        if tx['block_height'] > oldest_tx['block_height']:
+            oldest_tx = tx
+
+    if verbose:
+        print("collecting blocks....")
+
+    result = get_blocks_between_txs(youngest_tx, oldest_tx, verbose)
+
+    if verbose:
+        print("done!")
+        print("--- end get_blocks_in_addr_range() ---")
+
+    return result
+
+def get_blocks_for_two_addresses(addr1, addr2):
+
+    txs = get_all_sent_txs_for_addr(addr1)
+    txs += get_all_received_txs_for_addr(addr1)
+    txs += get_all_sent_txs_for_addr(addr2)
+    txs += get_all_received_txs_for_addr(addr2)
+
+    blocks = {}
+
+    for tx in txs:
+        try:
+            height = tx['block_height']
+
+            if height not in blocks:
+                blocks[height] = get_block_from_height(height)
+        except KeyError:
+            pass
+
+    print(blocks.keys())
+
+    return list(blocks.values())
 
 def get_blocks_in_time_range(tx_in, start_time, end_time):
     """
