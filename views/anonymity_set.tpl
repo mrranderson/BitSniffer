@@ -44,7 +44,7 @@
             <label class="col-sm-3">Entering Transaction Hash:</label> 
             <div class="col-sm-9">
               <input name="tx_in_hash" class="form-control" type="text"
-              value="0197dabc3c31c8221b5d7883a9d03240bcf7a3042e1bf6dcc26c8d3aa60c58ab" />
+              value="664c6c87f005fa8b7314eb5d412e39f0695b17b94fe2882315a3ff0a71f980de" />
               <p class="help-block">The hash of the transaction entering the mixer.</p>
             </div>
           </div>
@@ -52,7 +52,7 @@
             <label class="col-sm-3">Coin Value</label> 
             <div class="col-sm-9">
               <input name="tx_value" class="form-control" type="text" 
-              value="1523000"/>
+              value="1522000"/>
               <p class="help-block">The value, in Satoshis, of the coins you put
               into the mixer.</p>
             </div>
@@ -70,7 +70,7 @@
             <label class="col-sm-3">End Time:</label> 
             <div class="col-sm-9">
               <input name="end_time" class="form-control" type="text" 
-              value="0.75"/>
+              value="0.50"/>
               <p class="help-block">The latest time after input, in hours, the
               mixing service claimed you would receive your coins.</p>
             </div>
@@ -87,7 +87,7 @@
             <label class="col-sm-3">Percent fee, lower bound</label>
             <div class="col-sm-9">
               <input name="percent_fee_lower" class="form-control" type="text" 
-              value=".005"/>
+              value=".005455"/>
               <p class="help-block">Lower bound, from 0.0 to 1.0, on the percent
               of your coins the service collects.</p>
             </div>
@@ -96,7 +96,7 @@
             <label class="col-sm-3">Percent fee, upper bound</label> 
             <div class="col-sm-9">
               <input name="percent_fee_upper" class="form-control" type="text"
-              value=".006"/>
+              value=".034904"/>
               <p class="help-block">Upper bound, from 0.0 to 1.0, on the percent
               of your coins the service collects.</p>
             </div>
