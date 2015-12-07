@@ -77,9 +77,9 @@ def linkability_handle():
     
     results = test_linkability(*args)
     for k,v in results.items():
-        results[k] = str(results[k]*100)
-        results[k] = results[k][:results[k].find('.')+6]
-        results[k] += '%'
+        results[k] = "%.6f" % (float(results[k]), )
+        # results[k] = results[k][:results[k].find('.')+6]
+        # results[k] += '%'
 
     return {
         "results": results,
@@ -91,11 +91,11 @@ def linkability_handle():
             "AverageAmountSentReceivedTest": "Average amount sent and received"
         },
         "explanations": {
-            "OverlappingLifespanTest"      : "",
-            "AverageNumInputsOutputsTest"  : "",
-            "TransactionFrequencyTest"     : "",
-            "TotalAmountSentReceivedTest"  : "",
-            "AverageAmountSentReceivedTest": ""
+            "OverlappingLifespanTest"      : """This value represents how much the lifespan of both addresses overlap each other. The lifespan of an address is the number of blocks between that address' first and last transaction.A value close to 1.0 means a nearly complete overlap between the two addresses; a value near 0 means little to no overlap.""",
+            "AverageNumInputsOutputsTest"  : "This value compares: 1. the average number of addresses address 1 has sent Bitcoin to in a transaction, and 2. the average number of addresses address 2 has received Bitcoin from in a transaction. A value close to 1.0 means the averages are similar; a value near 0 means the averages are different.",
+            "TransactionFrequencyTest"     : "This compares the average frequency of address 1's outgoing transactions to address 2's incoming transactions, where frequency is defined as the total amount of transactions for an address divided by its lifespan. A value close to 1.0 indicates similar frequencies, while a 0.0 shows no correlation between frequencies.",
+            "TotalAmountSentReceivedTest"  : "This represents the correlation between the total amount address 1 has sent and address 2 has received. A value close to 1.0 means the amounts are positively correlated; a value close to 0 means they are negatively correlated.",
+            "AverageAmountSentReceivedTest": " This represents the correlation between the average amount address 1 sent during a transaction and the average amount address 2 received in a transaction. A value close to 1.0 means they have similar averages, while a 0.0 indicates no similarity."
         }
     }
 
