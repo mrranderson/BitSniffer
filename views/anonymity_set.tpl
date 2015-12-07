@@ -87,7 +87,7 @@
             <label class="col-sm-3">Percent fee, lower bound</label>
             <div class="col-sm-9">
               <input name="percent_fee_lower" class="form-control" type="text" 
-              value=".005455"/>
+              value=".005"/>
               <p class="help-block">Lower bound, from 0.0 to 1.0, on the percent
               of your coins the service collects.</p>
             </div>
