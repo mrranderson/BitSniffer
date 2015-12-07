@@ -70,7 +70,7 @@
             <label class="col-sm-3">End Time:</label> 
             <div class="col-sm-9">
               <input name="end_time" class="form-control" type="text" 
-              value="0.50"/>
+              value="0.30"/>
               <p class="help-block">The latest time after input, in hours, the
               mixing service claimed you would receive your coins.</p>
             </div>
