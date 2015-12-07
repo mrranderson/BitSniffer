@@ -31,7 +31,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="/">Home</a>
-          <a class="navbar-brand" href="/direct_link">Link Analysis</a>
+          <a class="navbar-brand" href="/direct_link">Direct Link</a>
           <a class="navbar-brand" href="/anonymity_set">Anonymity Set</a>
           <a class="navbar-brand" href="/linkability">Linkability</a>
         </div>
@@ -41,9 +41,24 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+        <h1>BitSniffer</h1>
+        <p>Select a task below to get started.</p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <a href="/direct_link"><h2>Find a Direct Link</h2></a>
+          <p>Check to make sure a mixing service gave you someone else&#39;s coins.</p>
+        </div>
+        <div class="col-md-4">
+          <a href="/anonymity_set"><h2>Calculate Anonymity Set</h2></a>
+          <p>Find other addresses that an attacker could confuse with you.</p>
+       </div>
+        <div class="col-md-4">
+          <a href="/linkability"><h2>Linkability Metrics for Two Addresses</h2></a>
+          <p>Compare two addresses with a suite of linkability metrics.</p>
+        </div>
       </div>
     </div>
 

@@ -31,7 +31,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="/">Home</a>
-          <a class="navbar-brand" href="/direct_link">Link Analysis</a>
+          <a class="navbar-brand" href="/direct_link">Direct Link</a>
           <a class="navbar-brand" href="/anonymity_set">Anonymity Set</a>
           <a class="navbar-brand" href="/linkability">Linkability</a>
         </div>
