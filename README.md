@@ -28,7 +28,7 @@ This will launch a web interface that can be accessed in your browser at [http:/
 
 ## Write-up:
 
-For more information about the theoretical aspects of this project, consult our [write-up](https://github.com/mrranderson/Mixer-Verifier/raw/master/writeup.pdf).
+For more information about the theoretical aspects of this project, consult our [write-up](https://github.com/mrranderson/BitSniffer/raw/master/writeup.pdf).
 
 ## License
 
